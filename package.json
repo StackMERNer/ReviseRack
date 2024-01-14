@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "react": "18.2.0",
-    "react-native": "0.73.2"
+    "react-native": "0.73.2",
+    "react-native-blob-util": "^0.19.6",
+    "react-native-pdf": "^6.7.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
