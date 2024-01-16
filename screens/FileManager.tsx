@@ -22,13 +22,9 @@ function FileManagement() {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [folderName, setFolderName] = useState('');
   const getAllFolders = () => {
-    RNFS.readDir(currPath) // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+    RNFS.readDir(currPath)
       .then(result => {
-        // console.log('GOT RESULT', result);
         setFolders(result);
-
-        // stat the first file
-        // return Promise.all([RNFS.stat(result[0].path), result[0].path]);
       })
       .catch(err => {
         console.log(err.message, err.code);
@@ -62,7 +58,7 @@ function FileManagement() {
   useEffect(() => {
     requestStoragePermission();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currPath]);
   const createFolder = () => {
     RNFS.mkdir(currPath + '/' + folderName)
       .then(() => {
@@ -70,15 +66,23 @@ function FileManagement() {
       })
       .catch(err => console.log(err));
   };
-  // console.log(folderName);
+  const hanldeDelete = (path: string) => {
+    RNFS.unlink(path)
+      .then(() => {
+        getAllFolders();
+      })
+      .catch(err => console.log(err));
+  };
   return (
     <View style={styles.container}>
       <View style={styles.backBtnContainer}>
-        <TouchableOpacity
-          // onPress={() => setModalVisible(true)}
-          style={styles.backBtn}>
-          <Text style={styles.backBtnText}>←</Text>
-        </TouchableOpacity>
+        {currPath === RNFS.DocumentDirectoryPath ? null : (
+          <TouchableOpacity
+            onPress={() => setCurrPath(RNFS.DocumentDirectoryPath)}
+            style={styles.backBtn}>
+            <Text style={styles.backBtnText}>←</Text>
+          </TouchableOpacity>
+        )}
 
         <View style={styles.pathContainer}>
           <Text style={styles.pathText}>{currPath}</Text>
@@ -90,7 +94,14 @@ function FileManagement() {
           numColumns={2}
           //   contentContainerStyle={{columnGap: 5}}
           renderItem={({item, index}) => (
-            <TouchableOpacity style={styles.folder}>
+            <TouchableOpacity
+              onPress={() => {
+                if (!item.name.includes('.')) {
+                  setCurrPath(currPath + '/' + item.name);
+                }
+              }}
+              onLongPress={() => hanldeDelete(item.path)}
+              style={styles.folder}>
               {/* <Icon name="stepforward" size={50} color="black" /> */}
 
               <View>
