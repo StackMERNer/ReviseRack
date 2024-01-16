@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
   FlatList,
+  Image,
   Modal,
   PermissionsAndroid,
   StyleSheet,
@@ -10,11 +11,16 @@ import {
   View,
 } from 'react-native';
 import RNFS from 'react-native-fs';
+
+interface Folder {
+  name: string;
+}
+
 function FileManagement() {
   const [modalVisible, setModalVisible] = useState(false);
   const [currPath, setCurrPath] = useState(RNFS.DocumentDirectoryPath);
-  const [folders, setFolders] = useState([]);
-
+  const [folders, setFolders] = useState<Folder[]>([]);
+  const [folderName, setFolderName] = useState('');
   const getAllFolders = () => {
     RNFS.readDir(currPath) // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
       .then(result => {
@@ -57,8 +63,27 @@ function FileManagement() {
     requestStoragePermission();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const createFolder = () => {
+    RNFS.mkdir(currPath + '/' + folderName)
+      .then(() => {
+        getAllFolders();
+      })
+      .catch(err => console.log(err));
+  };
+  // console.log(folderName);
   return (
     <View style={styles.container}>
+      <View style={styles.backBtnContainer}>
+        <TouchableOpacity
+          // onPress={() => setModalVisible(true)}
+          style={styles.backBtn}>
+          <Text style={styles.backBtnText}>←</Text>
+        </TouchableOpacity>
+
+        <View style={styles.pathContainer}>
+          <Text style={styles.pathText}>{currPath}</Text>
+        </View>
+      </View>
       <View style={styles.folderContainer}>
         <FlatList
           data={folders}
@@ -66,7 +91,23 @@ function FileManagement() {
           //   contentContainerStyle={{columnGap: 5}}
           renderItem={({item, index}) => (
             <TouchableOpacity style={styles.folder}>
-              <Text>{item.name}</Text>
+              {/* <Icon name="stepforward" size={50} color="black" /> */}
+
+              <View>
+                {item.name?.includes('.') ? (
+                  <Image
+                    style={styles.folderImage}
+                    source={require('./../assets/images/fileIcon.png')}
+                  />
+                ) : (
+                  <Image
+                    style={styles.folderImage}
+                    source={require('./../assets/images/folderOpen.png')}
+                  />
+                )}
+              </View>
+
+              <Text>{item.name.substring(0, 8) + '..'}</Text>
             </TouchableOpacity>
           )}
         />
@@ -83,11 +124,15 @@ function FileManagement() {
         <View style={styles.modal}>
           <View style={styles.modalView}>
             <TextInput
+              onChangeText={text => setFolderName(text)}
               placeholder="Enter Folder Name"
               style={styles.textInput}
             />
             <TouchableOpacity
-              onPress={() => setModalVisible(false)}
+              onPress={() => {
+                createFolder();
+                setModalVisible(false);
+              }}
               style={styles.createFolderButton}>
               <Text style={styles.createFolderButtonText}>Create Folder</Text>
             </TouchableOpacity>
@@ -106,6 +151,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 40,
   },
   addButton: {
     height: 50,
@@ -121,6 +167,22 @@ const styles = StyleSheet.create({
   plusTest: {
     color: '#fff',
     fontSize: 30,
+  },
+  // backBtn: {
+  //   // height: 50,
+  //   // width: 50,
+  //   position: 'absolute',
+  //   top: 10,
+  //   left: 2,
+  //   backgroundColor: 'gray',
+  //   // borderRadius: 10,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+  backBntText: {
+    // color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold',
   },
   modal: {
     position: 'absolute',
@@ -174,13 +236,43 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   folder: {
-    height: 40,
+    // height: 40,
     width: '45%',
     margin: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
+    // borderWidth: 1,
     padding: 10,
+  },
+  folderImage: {transform: 'scale(.6)'},
+  backBtnContainer: {
+    flexDirection: 'row', // Arrange children horizontally
+    alignItems: 'center', // Align children vertically at the center
+    padding: 10, // Add padding for better appearance
+  },
+  backBtn: {
+    flex: 1, // Takes 1 part of the available space
+    marginRight: 10, // Add some margin between the button and text
+    backgroundColor: 'black',
+    padding: 10,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  backBtnText: {
+    fontSize: 20,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  pathContainer: {
+    flex: 10, // Takes 4 parts of the available space
+    backgroundColor: 'lightgrey',
+    padding: 10,
+    borderRadius: 5,
+  },
+  pathText: {
+    fontSize: 16,
+    color: 'black',
   },
 });
 
