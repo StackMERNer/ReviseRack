@@ -1,4 +1,4 @@
-package com.revisionmanager
+package com.myreader
 
 import android.app.Application
 import com.facebook.react.PackageList
