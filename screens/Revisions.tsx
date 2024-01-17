@@ -44,9 +44,16 @@ const Revisions = () => {
   }, [filePath]);
 
   //   console.log('activePdf', activePdf);
+  console.log('activePdf', activePdf);
   if (activePdf) {
-    return <PDFReader pdfFilePath={activePdf} />;
+    return (
+      <PDFReader
+        onPressBackBtn={() => setActivePdf('')}
+        pdfFilePath={activePdf}
+      />
+    );
   }
+
   return (
     <View style={styles.revisionsContainer}>
       {revisionFolders.map((revision, index) => (
