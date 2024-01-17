@@ -22,23 +22,26 @@ const PDFReader = ({
   const [activePage, setActivePage] = useState(1);
   useEffect(() => {
     if (totalPages) {
-      const randomPage = Math.round(Math.random() * totalPages);
-
-      setActivePage(randomPage);
+      setRandomPage();
     }
   }, [totalPages]);
+  const setRandomPage = () => {
+    const randomPage = Math.round(Math.random() * totalPages);
+    setActivePage(randomPage);
+  };
   return (
     <>
       <View style={styles.pdfNavBar}>
         <TouchableOpacity onPress={onPressBackBtn}>
           <Text style={styles.backBtn}>←</Text>
         </TouchableOpacity>
-        <View>
-          <Text>
+        <View style={styles.navBarInfo}>
+          <Text style={{color: '#fff'}}>
             {activePage}/{totalPages}
           </Text>
         </View>
       </View>
+
       <Pdf
         trustAllCerts={false}
         source={{
@@ -51,8 +54,9 @@ const PDFReader = ({
         renderActivityIndicator={() => (
           <ActivityIndicator color="black" size="large" />
         )}
-        enablePaging={true}
+        // enablePaging={true}
         onLoadProgress={percentage => console.log(`Loading :${percentage}`)}
+        onPageChanged={page => setActivePage(page)}
         onLoadComplete={pages => {
           setTotalPages(pages);
         }}
@@ -63,6 +67,11 @@ const PDFReader = ({
 
         style={styles.pdf}
       />
+      <View>
+        <TouchableOpacity onPress={setRandomPage} style={styles.shuffleBtn}>
+          <Text style={styles.shuffleBtnTxt}>Shuffle</Text>
+        </TouchableOpacity>
+      </View>
     </>
   );
 };
@@ -72,14 +81,38 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+    backgroundColor: 'black',
   },
   backBtn: {
     fontSize: 30,
     fontWeight: 'bold',
     alignItems: 'center',
-
     paddingBottom: 4,
     justifyContent: 'center',
+    color: '#fff',
+  },
+  shuffleBtn: {
+    // height: 50,
+    // width: 50,
+    position: 'absolute',
+    bottom: 100,
+    right: 20,
+    padding: 10,
+    backgroundColor: 'black',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  shuffleBtnTxt: {
+    color: '#fff',
+    fontSize: 15,
+  },
+  navBarInfo: {
+    flex: 10,
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    justifyContent: 'flex-end',
   },
   pdf: {flex: 1, width: Dimensions.get('window').width},
 });
