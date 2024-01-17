@@ -34,14 +34,27 @@ function FileManagement() {
         console.log(err.message, err.code);
       });
   };
+
+  // creating Revisions folder if it's not exist
+  useEffect(() => {
+    const revisionsFolderPath = `${RNFS.DocumentDirectoryPath}/Revisions`;
+    RNFS.exists(revisionsFolderPath)
+      .then(exists => {
+        if (!exists) {
+          return RNFS.mkdir(revisionsFolderPath);
+        }
+      })
+      .catch(err => {
+        console.log(err.message);
+      });
+  }, []);
   const requestStoragePermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
         {
           title: 'Need Storage Permission',
-          message:
-            'this app needs access to your Storage ',
+          message: 'this app needs access to your Storage ',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
@@ -109,6 +122,10 @@ function FileManagement() {
     }
   };
   const [pdfFilePath, setPdfFilePath] = useState('');
+
+  const folderNames = currPath.split('/');
+  const isInsideRevisions = folderNames[folderNames.length - 2] === 'Revisions';
+
   return (
     <View style={styles.container}>
       <View style={styles.backBtnContainer}>
@@ -123,15 +140,26 @@ function FileManagement() {
           </TouchableOpacity>
         )}
 
-        <View style={styles.pathContainer}>
+        {/* <View style={styles.pathContainer}>
           <Text style={styles.pathText}>{currPath}</Text>
-        </View>
+        </View> */}
       </View>
       {!pdfFilePath ? (
         <View style={{width: '100%', height: '100%'}}>
-          <View>
-            <Button title="Copy PDF" onPress={selectPDF} />
-          </View>
+          {isInsideRevisions && (
+            <TouchableOpacity
+              style={{
+                padding: 10,
+                backgroundColor: 'black',
+                borderRadius: 10,
+                position: 'absolute',
+                right: 10,
+              }}
+              onPress={selectPDF}>
+              <Text style={{color: 'white'}}>Add Pdf</Text>
+            </TouchableOpacity>
+          )}
+
           <View style={styles.folderContainer}>
             <FlatList
               data={folders}
@@ -171,11 +199,13 @@ function FileManagement() {
               )}
             />
           </View>
-          <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            style={styles.addButton}>
-            <Text style={styles.plusTest}>+</Text>
-          </TouchableOpacity>
+          {!isInsideRevisions && (
+            <TouchableOpacity
+              onPress={() => setModalVisible(true)}
+              style={styles.addButton}>
+              <Text style={styles.plusTest}>+</Text>
+            </TouchableOpacity>
+          )}
           <Modal
             onRequestClose={() => setModalVisible(false)}
             transparent={true}
@@ -271,7 +301,7 @@ const styles = StyleSheet.create({
   createFolderButtonText: {
     color: '#fff',
     textAlign: 'center',
-    fontSize: 25,
+    fontSize: 15,
   },
   createFolderButton: {
     backgroundColor: 'black',

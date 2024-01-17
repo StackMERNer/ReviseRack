@@ -1,8 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import RNFS from 'react-native-fs';
 
 import PDFReader from './PDFReader';
+import Calendar from '../components/Calendar';
 interface FileObject {
   ctime: Date | undefined;
   isDirectory: () => boolean;
@@ -21,7 +28,8 @@ const Revisions = () => {
         setRevisionFolders(result);
       })
       .catch(err => {
-        console.log(err.message, err.code);
+        console.log(err.message);
+        // console.log(err.message, err.code);
       });
   }, [revisionsPath]);
   const [files, setFiles] = useState<FileObject[]>([]);
@@ -52,23 +60,31 @@ const Revisions = () => {
   }
 
   return (
-    <View style={styles.revisionsContainer}>
-      {revisionFolders.map((revision, index) => (
-        <TouchableOpacity
-          onPress={() => setFilePath(revision.path)}
-          style={styles.revision}
-          key={index}>
-          <Text>{revision.name}</Text>
-        </TouchableOpacity>
-      ))}
-      <View style={styles.revisionList}>
-        {files.map((file, index) => (
-          <TouchableOpacity onPress={() => setActivePdf(file.path)} key={index}>
-            <Text>{file.name}</Text>
+    <>
+      <View style={styles.calendarContainer}>
+        {/* <Text>My Calendar</Text> */}
+        <Calendar colors={[]} ranges={[]} />
+      </View>
+      <View style={styles.revisionsContainer}>
+        {revisionFolders.map((revision, index) => (
+          <TouchableOpacity
+            onPress={() => setFilePath(revision.path)}
+            style={styles.revision}
+            key={index}>
+            <Text>{revision.name}</Text>
           </TouchableOpacity>
         ))}
+        <View style={styles.revisionList}>
+          {files.map((file, index) => (
+            <TouchableOpacity
+              onPress={() => setActivePdf(file.path)}
+              key={index}>
+              <Text>{file.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 const styles = StyleSheet.create({
@@ -85,6 +101,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 20,
     paddingVertical: 10,
+  },
+  calendarContainer: {
+    height: '50%',
+    width: '100%',
+    paddingVertical: 16,
+    // borderWidth: 2,
+    marginHorizontal: 'auto',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

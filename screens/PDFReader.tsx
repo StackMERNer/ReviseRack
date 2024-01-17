@@ -66,7 +66,6 @@ const PDFReader = ({
         onPressLink={link => Linking.openURL(link)}
         // onScaleChanged={scale => console.log(scale)}
         // spacing={10}
-
         style={styles.pdf}
       />
       <View>

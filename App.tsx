@@ -7,6 +7,13 @@ const FilePicker = () => {
   const [addPdfs, setAddPdf] = useState(true);
   // return <>{addPdfs ? <FileManagement /> : <View></View>}</>;
 
+  return (
+    <>
+      <Revisions />
+      <FileManagement />
+    </>
+  );
+
   return addPdfs ? (
     <>
       <TouchableOpacity
