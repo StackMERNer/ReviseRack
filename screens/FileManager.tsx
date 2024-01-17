@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import RNFS from 'react-native-fs';
+
 import DocumentPicker from 'react-native-document-picker';
 interface Folder {
   name: string;
@@ -68,13 +69,7 @@ function FileManagement() {
       })
       .catch(err => console.log(err));
   };
-  // const createFile = () => {
-  //   RNFS.writeFile(fileName + '.txt', 'test content')
-  //     .then(() => {
-  //       getAllFolders();
-  //     })
-  //     .catch(err => console.log(err));
-  // };
+
   const hanldeDelete = (path: string) => {
     RNFS.unlink(path)
       .then(() => {
@@ -84,54 +79,39 @@ function FileManagement() {
   };
   const selectPDF = async () => {
     try {
-      const result = await DocumentPicker.pickSingle({
+      const selectedFile = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.pdf],
-        copyTo: 'documentDirectory',
+        // copyTo: 'documentDirectory',
       });
-      // console.log(result);
 
-      // Use result.uri to get the file path
-      const pdfPath = result.fileCopyUri;
-      console.log(pdfPath);
-      if (pdfPath) {
-        copyPDFToAppFolder(pdfPath, 'books');
+      // const pdfPath = selectedFile.uri;
+      console.log('selectedFile', selectedFile);
+      if (selectedFile.name && selectedFile.uri) {
+        copyPDFToAppFolder(selectedFile);
       }
-      // Now, you have the path to the selected PDF file
     } catch (error) {
       console.log('selecting error', error);
     }
   };
 
-  const copyPDFToAppFolder = (pdfPath: string, destinationFolder: string) => {
+  const copyPDFToAppFolder = async (selectedFile: {
+    fileCopyUri: null | string;
+    name: string;
+    size: number;
+    type: string;
+    uri: string;
+  }) => {
     try {
-      const destinationPath = `${RNFS.DocumentDirectoryPath}/${destinationFolder}/`;
-      const pdfName = pdfPath.substring(pdfPath.lastIndexOf('/') + 1);
-
-      RNFS.copyFile(pdfPath, `${destinationPath}${pdfName}`)
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => console.log('error while copying', err));
-      // Now, the PDF is copied to your app's folder
+      const destinationPath = currPath.endsWith('/')
+        ? `currPath${selectedFile.name}`
+        : `${currPath}/${selectedFile.name}`;
+      // destPath =  /data/user/0/com.myreader/files/books/sample.pdf
+      await RNFS.copyFile(selectedFile.uri, destinationPath);
+      getAllFolders();
     } catch (error) {
       console.log('error occurred', error);
     }
   };
-
-  // const copyPDFToAppFolder = (pdfPath: string, destinationFolder: string) => {
-  //   try {
-  //     const destinationPath = `${RNFS.DocumentDirectoryPath}/${destinationFolder}/`;
-
-  //     RNFS.copyFile(pdfPath, `${destinationPath}`)
-  //       .then(res => {
-  //         console.log(res);
-  //       })
-  //       .catch(err => console.log('error while copying', err));
-  //     // Now, the PDF is copied to your app's folder
-  //   } catch (error) {
-  //     console.log('error occured', error);
-  //   }
-  // };
 
   return (
     <View style={styles.container}>
@@ -242,30 +222,12 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 30,
   },
-  // backBtn: {
-  //   // height: 50,
-  //   // width: 50,
-  //   position: 'absolute',
-  //   top: 10,
-  //   left: 2,
-  //   backgroundColor: 'gray',
-  //   // borderRadius: 10,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
   backBntText: {
-    // color: '#fff',
     fontSize: 30,
     fontWeight: 'bold',
   },
   modal: {
     position: 'absolute',
-    // top: 0,
-    // bottom: 0,
-    // left: 0,
-    // right: 0,
-    // height: 100,
-    // width: 100,
     height: '100%',
     width: '100%',
     backgroundColor: 'rgba(0,0,0,.5)',
