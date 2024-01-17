@@ -14,6 +14,7 @@ import {
 import RNFS from 'react-native-fs';
 
 import DocumentPicker from 'react-native-document-picker';
+import PDFReader from './PDFReader';
 interface Folder {
   name: string;
 }
@@ -23,7 +24,7 @@ function FileManagement() {
   const [currPath, setCurrPath] = useState(RNFS.DocumentDirectoryPath);
   const [folders, setFolders] = useState<Folder[]>([]);
   const [folderName, setFolderName] = useState('');
-  const [fileName, setFileName] = useState('');
+
   const getAllFolders = () => {
     RNFS.readDir(currPath)
       .then(result => {
@@ -81,11 +82,7 @@ function FileManagement() {
     try {
       const selectedFile = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.pdf],
-        // copyTo: 'documentDirectory',
       });
-
-      // const pdfPath = selectedFile.uri;
-      console.log('selectedFile', selectedFile);
       if (selectedFile.name && selectedFile.uri) {
         copyPDFToAppFolder(selectedFile);
       }
@@ -96,29 +93,31 @@ function FileManagement() {
 
   const copyPDFToAppFolder = async (selectedFile: {
     fileCopyUri: null | string;
-    name: string;
-    size: number;
-    type: string;
+    name: string | null;
+    size: number | null;
+    type: string | null;
     uri: string;
   }) => {
     try {
       const destinationPath = currPath.endsWith('/')
         ? `currPath${selectedFile.name}`
         : `${currPath}/${selectedFile.name}`;
-      // destPath =  /data/user/0/com.myreader/files/books/sample.pdf
       await RNFS.copyFile(selectedFile.uri, destinationPath);
       getAllFolders();
     } catch (error) {
       console.log('error occurred', error);
     }
   };
-
+  const [pdfFilePath, setPdfFilePath] = useState('');
   return (
     <View style={styles.container}>
       <View style={styles.backBtnContainer}>
         {currPath === RNFS.DocumentDirectoryPath ? null : (
           <TouchableOpacity
-            onPress={() => setCurrPath(RNFS.DocumentDirectoryPath)}
+            onPress={() => {
+              setCurrPath(RNFS.DocumentDirectoryPath);
+              setPdfFilePath('');
+            }}
             style={styles.backBtn}>
             <Text style={styles.backBtnText}>←</Text>
           </TouchableOpacity>
@@ -128,71 +127,87 @@ function FileManagement() {
           <Text style={styles.pathText}>{currPath}</Text>
         </View>
       </View>
-      <View>
-        <Button title="Copy PDF" onPress={selectPDF} />
-      </View>
-      <View style={styles.folderContainer}>
-        <FlatList
-          data={folders}
-          numColumns={2}
-          //   contentContainerStyle={{columnGap: 5}}
-          renderItem={({item, index}) => (
-            <TouchableOpacity
-              onPress={() => {
-                if (!item.name.includes('.')) {
-                  setCurrPath(currPath + '/' + item.name);
-                }
-              }}
-              onLongPress={() => hanldeDelete(item.path)}
-              style={styles.folder}>
-              {/* <Icon name="stepforward" size={50} color="black" /> */}
-
-              <View>
-                {item.name?.includes('.') ? (
-                  <Image
-                    style={styles.folderImage}
-                    source={require('./../assets/images/fileIcon.png')}
-                  />
-                ) : (
-                  <Image
-                    style={styles.folderImage}
-                    source={require('./../assets/images/folderOpen.png')}
-                  />
-                )}
-              </View>
-
-              <Text>{item.name.substring(0, 8) + '..'}</Text>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
-      <TouchableOpacity
-        onPress={() => setModalVisible(true)}
-        style={styles.addButton}>
-        <Text style={styles.plusTest}>+</Text>
-      </TouchableOpacity>
-      <Modal
-        onRequestClose={() => setModalVisible(false)}
-        transparent={true}
-        visible={modalVisible}>
-        <View style={styles.modal}>
-          <View style={styles.modalView}>
-            <TextInput
-              onChangeText={text => setFolderName(text)}
-              placeholder="Enter Folder Name"
-              style={styles.textInput}
-            />
-            <TouchableOpacity
-              onPress={() => {
-                createFolder();
-                setModalVisible(false);
-              }}
-              style={styles.createFolderButton}>
-              <Text style={styles.createFolderButtonText}>Create Folder</Text>
-            </TouchableOpacity>
+      {!pdfFilePath ? (
+        <View style={{width: '100%', height: '100%'}}>
+          <View>
+            <Button title="Copy PDF" onPress={selectPDF} />
           </View>
+          <View style={styles.folderContainer}>
+            <FlatList
+              data={folders}
+              numColumns={2}
+              //   contentContainerStyle={{columnGap: 5}}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    if (!item.name.includes('.')) {
+                      setCurrPath(currPath + '/' + item.name);
+                    } else {
+                      setPdfFilePath(currPath + '/' + item.name);
+                    }
+                  }}
+                  onLongPress={() => hanldeDelete(item.path)}
+                  style={styles.folder}>
+                  <View>
+                    {item.name?.includes('.') ? (
+                      <Image
+                        style={styles.folderImage}
+                        source={require('./../assets/images/fileIcon.png')}
+                      />
+                    ) : (
+                      <Image
+                        style={styles.folderImage}
+                        source={require('./../assets/images/folderOpen.png')}
+                      />
+                    )}
+                  </View>
+
+                  <Text>{item.name.substring(0, 8) + '..'}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={() => setModalVisible(true)}
+            style={styles.addButton}>
+            <Text style={styles.plusTest}>+</Text>
+          </TouchableOpacity>
+          <Modal
+            onRequestClose={() => setModalVisible(false)}
+            transparent={true}
+            visible={modalVisible}>
+            <View style={styles.modal}>
+              <View style={styles.modalView}>
+                <TextInput
+                  onChangeText={text => setFolderName(text)}
+                  placeholder="Enter Folder Name"
+                  style={styles.textInput}
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    createFolder();
+                    setModalVisible(false);
+                  }}
+                  style={styles.createFolderButton}>
+                  <Text style={styles.createFolderButtonText}>
+                    Create Folder
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    // createFolder();
+                    setModalVisible(false);
+                  }}
+                  style={styles.createFolderButton}>
+                  <Text style={styles.createFolderButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
-      </Modal>
+      ) : (
+        <PDFReader pdfFilePath={pdfFilePath} />
+      )}
     </View>
   );
 }
@@ -200,13 +215,12 @@ function FileManagement() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // borderBlockColor: 'red',
-    // borderWidth: 2,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 40,
   },
+
   addButton: {
     height: 50,
     width: 50,
@@ -236,7 +250,8 @@ const styles = StyleSheet.create({
   },
   modalView: {
     backgroundColor: '#fff',
-    height: 200,
+    // height: 200,
+    paddingVertical: 30,
     width: '80%',
     borderRadius: 10,
     justifyContent: 'center',
@@ -280,7 +295,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     padding: 10,
   },
-  folderImage: {transform: 'scale(.6)'},
+  folderImage: {transform: [{scale: 0.6}]},
   backBtnContainer: {
     flexDirection: 'row', // Arrange children horizontally
     alignItems: 'center', // Align children vertically at the center
