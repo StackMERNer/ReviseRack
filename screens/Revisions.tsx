@@ -42,9 +42,6 @@ const Revisions = () => {
       //   };
     }
   }, [filePath]);
-
-  //   console.log('activePdf', activePdf);
-  console.log('activePdf', activePdf);
   if (activePdf) {
     return (
       <PDFReader
@@ -76,10 +73,12 @@ const Revisions = () => {
 };
 const styles = StyleSheet.create({
   revisionsContainer: {
+    marginTop: 30,
     paddingHorizontal: 10,
   },
   revisionList: {
     borderWidth: 1,
+    gap: 10,
     padding: 10,
   },
   revision: {

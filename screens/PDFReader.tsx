@@ -55,14 +55,16 @@ const PDFReader = ({
           <ActivityIndicator color="black" size="large" />
         )}
         // enablePaging={true}
-        onLoadProgress={percentage => console.log(`Loading :${percentage}`)}
-        onPageChanged={page => setActivePage(page)}
+        // onLoadProgress={percentage => console.log(`Loading :${percentage}`)}
+        onPageChanged={page => {
+          setActivePage(page);
+        }}
         onLoadComplete={pages => {
           setTotalPages(pages);
         }}
         onError={error => console.log(error)}
         onPressLink={link => Linking.openURL(link)}
-        onScaleChanged={scale => console.log(scale)}
+        // onScaleChanged={scale => console.log(scale)}
         // spacing={10}
 
         style={styles.pdf}
