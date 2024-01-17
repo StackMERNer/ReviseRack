@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Button,
   FlatList,
   Image,
   Modal,
@@ -11,7 +12,7 @@ import {
   View,
 } from 'react-native';
 import RNFS from 'react-native-fs';
-
+import DocumentPicker from 'react-native-document-picker';
 interface Folder {
   name: string;
 }
@@ -21,6 +22,7 @@ function FileManagement() {
   const [currPath, setCurrPath] = useState(RNFS.DocumentDirectoryPath);
   const [folders, setFolders] = useState<Folder[]>([]);
   const [folderName, setFolderName] = useState('');
+  const [fileName, setFileName] = useState('');
   const getAllFolders = () => {
     RNFS.readDir(currPath)
       .then(result => {
@@ -66,6 +68,13 @@ function FileManagement() {
       })
       .catch(err => console.log(err));
   };
+  // const createFile = () => {
+  //   RNFS.writeFile(fileName + '.txt', 'test content')
+  //     .then(() => {
+  //       getAllFolders();
+  //     })
+  //     .catch(err => console.log(err));
+  // };
   const hanldeDelete = (path: string) => {
     RNFS.unlink(path)
       .then(() => {
@@ -73,6 +82,57 @@ function FileManagement() {
       })
       .catch(err => console.log(err));
   };
+  const selectPDF = async () => {
+    try {
+      const result = await DocumentPicker.pickSingle({
+        type: [DocumentPicker.types.pdf],
+        copyTo: 'documentDirectory',
+      });
+      // console.log(result);
+
+      // Use result.uri to get the file path
+      const pdfPath = result.fileCopyUri;
+      console.log(pdfPath);
+      if (pdfPath) {
+        copyPDFToAppFolder(pdfPath, 'books');
+      }
+      // Now, you have the path to the selected PDF file
+    } catch (error) {
+      console.log('selecting error', error);
+    }
+  };
+
+  const copyPDFToAppFolder = (pdfPath: string, destinationFolder: string) => {
+    try {
+      const destinationPath = `${RNFS.DocumentDirectoryPath}/${destinationFolder}/`;
+      const pdfName = pdfPath.substring(pdfPath.lastIndexOf('/') + 1);
+
+      RNFS.copyFile(pdfPath, `${destinationPath}${pdfName}`)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => console.log('error while copying', err));
+      // Now, the PDF is copied to your app's folder
+    } catch (error) {
+      console.log('error occurred', error);
+    }
+  };
+
+  // const copyPDFToAppFolder = (pdfPath: string, destinationFolder: string) => {
+  //   try {
+  //     const destinationPath = `${RNFS.DocumentDirectoryPath}/${destinationFolder}/`;
+
+  //     RNFS.copyFile(pdfPath, `${destinationPath}`)
+  //       .then(res => {
+  //         console.log(res);
+  //       })
+  //       .catch(err => console.log('error while copying', err));
+  //     // Now, the PDF is copied to your app's folder
+  //   } catch (error) {
+  //     console.log('error occured', error);
+  //   }
+  // };
+
   return (
     <View style={styles.container}>
       <View style={styles.backBtnContainer}>
@@ -87,6 +147,9 @@ function FileManagement() {
         <View style={styles.pathContainer}>
           <Text style={styles.pathText}>{currPath}</Text>
         </View>
+      </View>
+      <View>
+        <Button title="Copy PDF" onPress={selectPDF} />
       </View>
       <View style={styles.folderContainer}>
         <FlatList
