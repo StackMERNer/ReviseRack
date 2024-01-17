@@ -39,20 +39,20 @@ function FileManagement() {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
         {
-          title: 'Cool Photo App Storage Permission',
+          title: 'Need Storage Permission',
           message:
-            'Cool Photo App needs access to your Storage ' +
-            'so you can take awesome pictures.',
+            'this app needs access to your Storage ',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
         },
       );
-      console.log(granted);
+      // console.log(granted);
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         // console.log('You can use the Storage');
         getAllFolders();
       } else {
+        console.log(granted);
         console.log('Storage permission denied');
       }
     } catch (err) {
@@ -162,7 +162,11 @@ function FileManagement() {
                     )}
                   </View>
 
-                  <Text>{item.name.substring(0, 8) + '..'}</Text>
+                  <Text>
+                    {item.name.length > 20
+                      ? item.name.substring(0, 20) + '..'
+                      : item.name}
+                  </Text>
                 </TouchableOpacity>
               )}
             />

@@ -1,8 +1,13 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import FileManagement from './screens/FileManager';
+import {Text, View} from 'react-native';
+import Revisions from './screens/Revisions';
 const FilePicker = () => {
-  return <FileManagement />;
+  const [addPdfs, setAddPdf] = useState(false);
+  // return <>{addPdfs ? <FileManagement /> : <View></View>}</>;
+
+  return false ? <FileManagement /> : <Revisions />;
 };
 
 export default FilePicker;
