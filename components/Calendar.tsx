@@ -20,6 +20,9 @@ interface dateType {
   isRangeStart?: boolean;
   isRangeEnd?: boolean;
   inactive?: true;
+  isBorderInRight?: boolean;
+  isRoundedRight?: boolean;
+  isRoundedLeft?: boolean;
 }
 const Calendar = ({
   ranges = [],
@@ -45,26 +48,7 @@ const Calendar = ({
     'নভেম্বর',
     'ডিসেম্বর',
   ];
-
-  const renderCalendarr = () => {
-    let date = new Date();
-    // ... (same logic as your web version)
-
-    const data: dateType[] = [];
-    for (let i = 1; i <= lastDateofMonth; i++) {
-      // ... (same logic as your web version)
-      data.push({
-        day: i,
-        isToday:
-          i === date.getDate() &&
-          currMonth === date.getMonth() &&
-          currYear === date.getFullYear(),
-        // ... (other flags as needed)
-      });
-    }
-
-    return data;
-  };
+  const weekDays = ['রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'শুক্র', 'শনি'];
   const renderCalendar = () => {
     let date = new Date();
     let firstDayofMonth = new Date(currYear, currMonth, 1).getDay(),
@@ -130,17 +114,7 @@ const Calendar = ({
       const isFirstDate = i === 1;
       const isLastDate = i === lastDateofMonth;
       const shouldAddBorderRight = isInRange && !isInlastOfRow && !isRangeEnd;
-      const liClasses = `${
-        isFirstDate ? 'rounded-l-full ' : isLastDate ? 'rounded-r-full ' : ''
-      }${isRangeStart || isFirstOfRow ? 'rounded-l-full ' : ''}${
-        isInRange
-          ? ` bg-c-primary dark:bg-dark-btn-primary  dark:text-dark-card-primary text-white `
-          : ''
-      } ${isToday} ${isRangeEnd || isInlastOfRow ? 'rounded-r-full' : ''}  ${
-        shouldAddBorderRight
-          ? 'border-r-[1px] border-white dark:border-black'
-          : ''
-      }`;
+
       dates.push({
         day: i,
         isFirstDate: isFirstDate,
@@ -149,6 +123,10 @@ const Calendar = ({
         isRangeEnd: isRangeEnd,
         isRangeStart: isRangeStart,
         isToday: isToday,
+        isBorderInRight: shouldAddBorderRight,
+        isRoundedLeft: isFirstOfRow,
+        isRoundedRight: isInlastOfRow,
+        // isRoundedRight: shouldAddBorderRight,
       });
     }
 
@@ -158,7 +136,7 @@ const Calendar = ({
     return dates;
   }; //here ends
 
-  const handleUpdatingMonth = method => {
+  const handleUpdatingMonth = (method: 'increase' | 'decrease') => {
     if (method === 'increase') {
       const nextMonth = currMonth < 11 ? currMonth + 1 : 0;
       const nextYear = currMonth < 11 ? currYear : currYear + 1;
@@ -175,12 +153,11 @@ const Calendar = ({
   return (
     <View style={styles.container}>
       <View style={styles.calendarContainer}>
-        {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => handleUpdatingMonth('decrease')}
             style={styles.arrowButton}>
-            {/* Icon for previous month */}
+            <Text style={styles.arrowText}>←</Text>
           </TouchableOpacity>
           <Text
             style={
@@ -189,20 +166,41 @@ const Calendar = ({
           <TouchableOpacity
             onPress={() => handleUpdatingMonth('increase')}
             style={styles.arrowButton}>
-            {/* Icon for next month */}
+            <Text style={styles.arrowText}>→</Text>
           </TouchableOpacity>
         </View>
 
         {/* Calendar Body */}
+        <View style={styles.weekDays}>
+          {weekDays.map((week, index) => (
+            <Text style={styles.weekDay} key={index}>
+              {week}
+            </Text>
+          ))}
+        </View>
         <FlatList
           data={renderCalendar()}
           numColumns={7}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item}) => (
-            <TouchableOpacity
-              style={[styles.day, item.isToday && styles.today]}>
-              <Text style={styles.dayText}>{item.day}</Text>
-            </TouchableOpacity>
+            <View
+              style={[
+                styles.day,
+                item.isInRange && styles.bgBlue,
+                (item.isFirstDate || item.isRangeStart || item.isRoundedLeft) &&
+                  styles.roundLeft,
+                (item.isRangeEnd || item.isRoundedRight || item.isLastDate) &&
+                  styles.roundRight,
+                item.isBorderInRight && styles.borderRight,
+              ]}>
+              <Text
+                style={[
+                  item.isInRange ? styles.textWhite : styles.dayText,
+                  item.isToday && styles.today,
+                ]}>
+                {item.day}
+              </Text>
+            </View>
           )}
         />
       </View>
@@ -217,27 +215,41 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     // borderWidth: 1,
     width: '94%',
-    borderRadius: 2,
-    paddingVertical: 45,
-    paddingHorizontal: 25,
-    // width: '100%',
-    elevation: 3,
+    borderRadius: 10,
+    // paddingVertical: 45,
+    paddingHorizontal: 15,
+    elevation: 10,
     shadowColor: 'gray',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.2,
+    backgroundColor: 'white',
+    shadowOffset: {width: -2, height: 4},
+
+    shadowOpacity: 1,
     shadowRadius: 3,
   },
-  calendarContainer: {
-    width: '90%',
+  weekDays: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
   },
+  calendarContainer: {
+    width: '100%',
+  },
+  weekDay: {fontSize: 16, color: 'black'},
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingBottom: 35,
+    paddingTop: 15,
   },
   arrowButton: {
-    padding: 10,
+    paddingHorizontal: 10,
+    backgroundColor: '#d3d3d3',
+    borderRadius: 2,
+  },
+  arrowText: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   headerText: {
     fontSize: 16,
@@ -247,15 +259,44 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: '#ddd',
+    paddingVertical: 3,
+    marginBottom: 6,
+    // paddingHorizontal: 10,
   },
+  //   border:{
+  //     border
+  //   },
   today: {
-    backgroundColor: 'blue', // Adjust color as needed
+    borderBottomWidth: 3,
+    borderBottomColor: 'blue',
+    // backgroundColor: 'blue', // Adjust color as needed
   },
+  // inRange:{},
+  bgBlue: {
+    backgroundColor: 'blue',
+  },
+  textWhite: {
+    color: 'white',
+  },
+  roundLeft: {
+    borderTopLeftRadius: 50, // You can adjust the radius value as needed
+    borderBottomLeftRadius: 50, // You can adjust the radius value as needed
+    // ... other styles
+  },
+  borderRight: {
+    borderRightWidth: 1,
+    borderRightColor: 'white',
+  },
+  roundRight: {
+    borderTopRightRadius: 50, // You can adjust the radius value as needed
+    borderBottomRightRadius: 50, // You can adjust the radius value as needed
+    // ... other styles
+  },
+
   dayText: {
-    fontSize: 12,
+    fontSize: 14,
+    color: 'black',
+    paddingBottom: 2,
   },
 });
 

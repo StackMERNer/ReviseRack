@@ -58,12 +58,31 @@ const Revisions = () => {
       />
     );
   }
+  interface Range {
+    startDate: Date;
+    endDate: Date;
+  }
+  const dateRanges: Range[] = [
+    {
+      startDate: new Date(), // Current date
+      endDate: new Date(new Date().getFullYear(), new Date().getMonth(), 10),
+    },
+    {
+      startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 5),
+      endDate: new Date(new Date().getFullYear(), new Date().getMonth(), 10),
+    },
+    {
+      startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 20),
+      endDate: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 5),
+    },
+    // Add more ranges as needed
+  ];
 
   return (
     <>
       <View style={styles.calendarContainer}>
         {/* <Text>My Calendar</Text> */}
-        <Calendar colors={[]} ranges={[]} />
+        <Calendar colors={[]} ranges={dateRanges} />
       </View>
       <View style={styles.revisionsContainer}>
         {revisionFolders.map((revision, index) => (
