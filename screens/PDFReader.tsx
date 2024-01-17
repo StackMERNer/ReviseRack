@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -19,9 +19,14 @@ const PDFReader = ({
 }) => {
   //one url type: /data/user/0/com.myreader/files/Revisions/Revision 1/test.pdf
   const [totalPages, setTotalPages] = useState(0);
-  // console.log('totalPages', totalPages);
-  // const 
-  const [activePage,setActivePage] = useState(1);
+  const [activePage, setActivePage] = useState(1);
+  useEffect(() => {
+    if (totalPages) {
+      const randomPage = Math.round(Math.random() * totalPages);
+
+      setActivePage(randomPage);
+    }
+  }, [totalPages]);
   return (
     <>
       <View style={styles.pdfNavBar}>
@@ -29,7 +34,9 @@ const PDFReader = ({
           <Text style={styles.backBtn}>←</Text>
         </TouchableOpacity>
         <View>
-          <Text>Other informations</Text>
+          <Text>
+            {activePage}/{totalPages}
+          </Text>
         </View>
       </View>
       <Pdf
