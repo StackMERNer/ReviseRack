@@ -95,7 +95,7 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
       }
     });
   }, []);
-  // useEffect(()=>{},[]) EAFFE1
+  
 
   const handlePdfClick = (file: FileObject) => {
     if (file.name && !revisionCompletion.completedNames.includes(file.name)) {

@@ -211,6 +211,7 @@ const Calendar = ({
                   style={[
                     item.isInRange ? styles.textWhite : styles.dayText,
                     item.isToday && styles.today,
+                    item.inactive && {color: 'lightgray'},
                   ]}>
                   {convertEnglishToBengali(item.day.toString())}
                 </Text>
@@ -309,7 +310,7 @@ const styles = StyleSheet.create({
   },
 
   dayText: {
-    fontSize: 10,
+    fontSize: 14,
     color: 'black',
     paddingBottom: 2,
   },
