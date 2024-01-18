@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Calendar from '../../components/Calendar';
-import {FlatList} from 'react-native-gesture-handler';
+import {FlatList, ScrollView} from 'react-native-gesture-handler';
 import Revisions from '../../screens/Revisions';
 import FileManagement from '../../screens/FileManager';
 import PDFReader from '../../screens/PDFReader';
@@ -39,8 +39,11 @@ const HomeScreen = () => {
   }
   return (
     <>
-      <Calendar colors={[]} ranges={dateRanges} />
-      <Revisions onPdfSelect={pdfPath => setSelectedPdf(pdfPath)} />
+      <View style={{maxHeight: '98%'}}>
+        <Calendar colors={[]} ranges={dateRanges} />
+
+        <Revisions onPdfSelect={pdfPath => setSelectedPdf(pdfPath)} />
+      </View>
 
       {/* <FlatList
         data={['header', 'revisions', 'fileManagement']}
@@ -50,7 +53,9 @@ const HomeScreen = () => {
             case 'header':
               return renderHeader();
             case 'revisions':
-              return <Revisions />;
+              return (
+                <Revisions onPdfSelect={pdfPath => setSelectedPdf(pdfPath)} />
+              );
             case 'fileManagement':
               return <FileManagement />;
             default:

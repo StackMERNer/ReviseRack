@@ -79,31 +79,30 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
       setFilePath(todaysRevision.path);
     }
   }, [revisionFolders]);
-  // console.log('filePath', filePath);
-  // console.log('files', files);
   return (
     <View
       style={{
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingBottom: 40,
+        // paddingBottom: 40,
+        
       }}>
-      <View>
-        {files.length > 1 && (
-          <Text
-            style={{
-              textAlign: 'center',
-              paddingVertical: 10,
-              fontSize: 20,
-              fontWeight: 'bold',
-            }}>
-            Todays Revisions
-          </Text>
-        )}
-      </View>
       <View style={styles.revisionsContainer}>
-        {/* <FlatList
+        <View>
+          {files.length > 1 && (
+            <Text
+              style={{
+                textAlign: 'center',
+                paddingVertical: 10,
+                fontSize: 20,
+                fontWeight: 'bold',
+              }}>
+              Todays Revisions
+            </Text>
+          )}
+        </View>
+        <FlatList
           data={files}
           // contentContainerStyle={{columnGap: 5}}
           renderItem={({item, index}) => (
@@ -125,41 +124,19 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
               </View>
             </View>
           )}
-        /> */}
-
-        {files.map((item, index) => (
-          <View key={index} style={styles.revision}>
-            <View>
-              <Text
-                onPress={() => onPdfSelect(item.path)}
-                style={{fontSize: 18}}>
-                {index + 1}. {item.name}
-              </Text>
-            </View>
-            <View
-              style={{
-                backgroundColor: '#EAFFE1',
-                paddingHorizontal: 10,
-                borderRadius: 50,
-              }}>
-              <Text style={{color: 'green'}}>done</Text>
-            </View>
-          </View>
-        ))}
+        />
       </View>
     </View>
   );
 };
 const styles = StyleSheet.create({
   revisionsContainer: {
-    marginTop: 30,
-    paddingHorizontal: 14,
-    // marginBottom: 20,
+    marginTop: 15,
     width: '96%',
+    height: 240,
     backgroundColor: 'white',
-    // borderWidth: 1,
+    paddingBottom:20,
     borderRadius: 10,
-    borderWidth: 2,
     gap: 2,
   },
   revisionList: {

@@ -57,7 +57,9 @@ const FilePicker = () => {
     //   }}
     //   ListFooterComponent={<View style={{height: 200}} />}
     // />
-    <MainContainer/>
+    
+      <MainContainer />
+    
   );
 };
 
