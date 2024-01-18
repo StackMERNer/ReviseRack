@@ -3,7 +3,13 @@ import {FlatList, StyleSheet, Text, View} from 'react-native';
 import RNFS from 'react-native-fs';
 import PDFReader from './PDFReader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RangeManagerType } from '../navigation/screens/HomeScreen';
 
+type RevisionCompletionType = {
+  date: number;
+  completedNames: string[];
+  RevFolderName: string;
+};
 interface FileObject {
   ctime: Date | undefined;
   isDirectory: () => boolean;
@@ -13,7 +19,15 @@ interface FileObject {
   path: string;
   size: number;
 }
-const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
+const Revisions = ({
+  onPdfSelect,
+  onRangeManagerUpdate,
+  rangeManager,
+}: {
+  onPdfSelect: (pdfPath: string) => void;
+  onRangeManagerUpdate: (updatedRangeManager: RangeManagerType) => void;
+  rangeManager: RangeManagerType;
+}) => {
   const [revisionFolders, setRevisionFolders] = useState<FileObject[]>([]);
   const revisionsPath = `${RNFS.DocumentDirectoryPath}/Revisions`;
   useEffect(() => {
@@ -29,6 +43,8 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
   const [files, setFiles] = useState<FileObject[]>([]);
   const [activePdf, setActivePdf] = useState('');
   const [filePath, setFilePath] = useState('');
+  const [nextRevisionIndex, setNextRevisionIndex] = useState(0);
+  // const [rangeManager,setRangeManger] = useSta
   useEffect(() => {
     if (filePath) {
       RNFS.readDir(filePath)
@@ -48,54 +64,55 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
       />
     );
   }
-  interface Range {
-    startDate: Date;
-    endDate: Date;
-  }
-  const dateRanges: Range[] = [
-    {
-      startDate: new Date(), // Current date
-      endDate: new Date(new Date().getFullYear(), new Date().getMonth(), 10),
-    },
-    {
-      startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 5),
-      endDate: new Date(new Date().getFullYear(), new Date().getMonth(), 10),
-    },
-    {
-      startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 20),
-      endDate: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 5),
-    },
-    // Add more ranges as needed
-  ];
 
-  type RevisionCompletionType = {
-    date: Date;
-    completedNames: string[];
-    RevFolderName: string;
-  };
+  const [todaysRevFolder, setTodaysRevFolder] = useState<
+    undefined | FileObject
+  >(undefined);
 
   const [revisionCompletion, setRevisionCompletion] =
     useState<RevisionCompletionType>({
-      date: new Date(),
+      date: new Date().getDate(),
       completedNames: [],
       RevFolderName: '',
     });
 
   useEffect(() => {
-    const todaysRevision = revisionFolders[0];
+    if (nextRevisionIndex > revisionFolders.length) {
+      setNextRevisionIndex(0);
+    }
+    const todaysRevision = revisionFolders[nextRevisionIndex];
     if (todaysRevision) {
+      setTodaysRevFolder(todaysRevision);
       setFilePath(todaysRevision.path);
     }
-  }, [revisionFolders]);
+  }, [revisionFolders, nextRevisionIndex]);
 
   useEffect(() => {
     AsyncStorage.getItem('revisionCompletion').then(res => {
       if (res) {
-        setRevisionCompletion(JSON.parse(res));
+        const revisionCompletionObj: RevisionCompletionType = JSON.parse(res);
+        if (
+          revisionCompletionObj.date === new Date().getDate() &&
+          revisionCompletionObj.completedNames.length === files.length &&
+          rangeManager.lastUpdated !== new Date().getDate()
+        ) {
+          updateRangeManager();
+        }
+        if (revisionCompletionObj.date === new Date().getDate()) {
+          setRevisionCompletion(revisionCompletionObj);
+        }
+      }
+    });
+    AsyncStorage.getItem('RangeManager').then(res => {
+      if (res) {
+        const rangeManager: RangeManagerType = JSON.parse(res);
+        const nextRevisionIndex = rangeManager.nextRevisionIndex ?? 0;
+        if (rangeManager.lastUpdated !== new Date().getDate()) {
+          setNextRevisionIndex(nextRevisionIndex);
+        }
       }
     });
   }, []);
-  
 
   const handlePdfClick = (file: FileObject) => {
     if (file.name && !revisionCompletion.completedNames.includes(file.name)) {
@@ -112,6 +129,40 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
     } else {
       onPdfSelect(file.path);
     }
+  };
+  const updateRangeManager = () => {
+    AsyncStorage.getItem('RangeManager').then(res => {
+      let rangeManager: RangeManagerType = res
+        ? JSON.parse(res)
+        : {lastUpdated: new Date().getDate(), nextRevisionIndex: 0, ranges: []};
+      let ranges = rangeManager.ranges;
+      let lastRange = ranges[ranges.length - 1] ?? {
+        startDate: new Date(),
+        endDate: new Date(),
+      };
+      let updatedLastRange = {...lastRange, endDate: new Date()};
+      let withoutLastRange = ranges.slice(0, ranges.length - 2);
+      let updatedNextRevisionIndex =
+        nextRevisionIndex < revisionFolders.length - 1
+          ? nextRevisionIndex + 1
+          : 0;
+      const updatedRangeManager: RangeManagerType = {
+        nextRevisionIndex: updatedNextRevisionIndex,
+        lastUpdated: new Date().getDate(),
+        ranges: [...withoutLastRange, updatedLastRange].slice(-5),
+      };
+      AsyncStorage.setItem(
+        'RangeManager',
+        JSON.stringify(updatedRangeManager),
+      ).then(() => {
+        AsyncStorage.getItem('RangeManager').then(res => {
+          if (res) {
+            let rangeManager: RangeManagerType = JSON.parse(res);
+            onRangeManagerUpdate(rangeManager);
+          }
+        });
+      });
+    });
   };
   return (
     <View
@@ -130,7 +181,7 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
                 fontSize: 20,
                 fontWeight: 'bold',
               }}>
-              Todays Revision
+              Todays Revision: {todaysRevFolder?.name}
             </Text>
           )}
         </View>

@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
-  Platform,
 } from 'react-native';
 interface Range {
   startDate: Date;
