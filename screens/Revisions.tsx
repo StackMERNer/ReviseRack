@@ -95,7 +95,7 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
       }
     });
   }, []);
-  // useEffect(()=>{},[])
+  // useEffect(()=>{},[]) EAFFE1
 
   const handlePdfClick = (file: FileObject) => {
     if (file.name && !revisionCompletion.completedNames.includes(file.name)) {
@@ -152,15 +152,19 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
                 </View>
                 <View
                   style={[
+                    isCompleted
+                      ? {backgroundColor: '#EAFFE1'}
+                      : {
+                          backgroundColor: '#eef0f2',
+                        },
                     {
                       paddingHorizontal: 10,
-                      borderRadius: 50,
+                      borderRadius: 20,
                     },
-                    isCompleted ? {backgroundColor: '#EAFFE1'} : {},
                   ]}>
                   <Text
                     style={[isCompleted ? {color: 'green'} : {color: 'black'}]}>
-                    done
+                    {isCompleted ? 'done' : 'pending'}
                   </Text>
                 </View>
               </View>

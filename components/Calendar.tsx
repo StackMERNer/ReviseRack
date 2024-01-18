@@ -48,6 +48,17 @@ const Calendar = ({
     'নভেম্বর',
     'ডিসেম্বর',
   ];
+
+  function convertEnglishToBengali(englishNumber: string) {
+    const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+
+    // Using regular expression to replace each English digit with its corresponding Bengali digit
+    const bengaliNumber = englishNumber.replace(/\d/g, match => {
+      return bengaliDigits[parseInt(match, 10)];
+    });
+
+    return bengaliNumber;
+  }
   const weekDays = ['রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'শুক্র', 'শনি'];
   const renderCalendar = () => {
     let date = new Date();
@@ -161,10 +172,9 @@ const Calendar = ({
               style={styles.arrowButton}>
               <Text style={styles.arrowText}>←</Text>
             </TouchableOpacity>
-            <Text
-              style={
-                styles.headerText
-              }>{`${months[currMonth]} ${currYear}`}</Text>
+            <Text style={styles.headerText}>{`${
+              months[currMonth]
+            } ${convertEnglishToBengali(currYear.toString())}`}</Text>
             <TouchableOpacity
               onPress={() => handleUpdatingMonth('increase')}
               style={styles.arrowButton}>
@@ -202,7 +212,7 @@ const Calendar = ({
                     item.isInRange ? styles.textWhite : styles.dayText,
                     item.isToday && styles.today,
                   ]}>
-                  {item.day}
+                  {convertEnglishToBengali(item.day.toString())}
                 </Text>
               </View>
             )}
@@ -222,7 +232,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 25,
     paddingHorizontal: 15,
-    elevation: 10,
+    // elevation: 10,
     shadowColor: 'gray',
     backgroundColor: 'white',
     shadowOffset: {width: -2, height: 4},
@@ -239,7 +249,7 @@ const styles = StyleSheet.create({
   calendarContainer: {
     width: '98%',
   },
-  weekDay: {fontSize: 16, color: 'black'},
+  weekDay: {fontSize: 14, color: 'black'},
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -257,7 +267,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   headerText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   day: {
@@ -299,7 +309,7 @@ const styles = StyleSheet.create({
   },
 
   dayText: {
-    fontSize: 14,
+    fontSize: 10,
     color: 'black',
     paddingBottom: 2,
   },
