@@ -67,28 +67,19 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
     },
     // Add more ranges as needed
   ];
-  const storeData = async () => {
-    try {
-      await AsyncStorage.setItem('key', 'value');
-      // console.log('Data stored successfully.');
-    } catch (error) {
-      console.error('Error storing data:', error);
-    }
+
+  type RevisionCompletionType = {
+    date: Date;
+    completedNames: string[];
+    RevFolderName: string;
   };
 
-  const retrieveData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('key');
-      if (value !== null) {
-        console.log('Retrieved data:', value);
-      } else {
-        console.log('No data found.');
-      }
-    } catch (error) {
-      console.error('Error retrieving data:', error);
-    }
-  };
-  
+  const [revisionCompletion, setRevisionCompletion] =
+    useState<RevisionCompletionType>({
+      date: new Date(),
+      completedNames: [],
+      RevFolderName: '',
+    });
 
   useEffect(() => {
     const todaysRevision = revisionFolders[0];
@@ -96,9 +87,32 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
       setFilePath(todaysRevision.path);
     }
   }, [revisionFolders]);
-  
-  
 
+  useEffect(() => {
+    AsyncStorage.getItem('revisionCompletion').then(res => {
+      if (res) {
+        setRevisionCompletion(JSON.parse(res));
+      }
+    });
+  }, []);
+  // useEffect(()=>{},[])
+
+  const handlePdfClick = (file: FileObject) => {
+    if (file.name && !revisionCompletion.completedNames.includes(file.name)) {
+      const updated = {
+        ...revisionCompletion,
+        completedNames: [...revisionCompletion.completedNames, file.name],
+      };
+      AsyncStorage.setItem('revisionCompletion', JSON.stringify(updated))
+        .then(res => {
+          console.log('stored', res);
+        })
+        .catch(err => console.log('failed to store', err))
+        .finally(() => onPdfSelect(file.path));
+    } else {
+      onPdfSelect(file.path);
+    }
+  };
   return (
     <View
       style={{
@@ -122,25 +136,36 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
         </View>
         <FlatList
           data={files}
-          renderItem={({item, index}) => (
-            <View style={styles.revision}>
-              <View>
-                <Text
-                  onPress={() => onPdfSelect(item.path)}
-                  style={{fontSize: 18}}>
-                  {index + 1}. {item.name}
-                </Text>
+          renderItem={({item, index}) => {
+            const isCompleted = revisionCompletion.completedNames.includes(
+              item.name ?? '',
+            );
+
+            return (
+              <View style={styles.revision}>
+                <View>
+                  <Text
+                    onPress={() => handlePdfClick(item)}
+                    style={{fontSize: 18}}>
+                    {index + 1}. {item.name}
+                  </Text>
+                </View>
+                <View
+                  style={[
+                    {
+                      paddingHorizontal: 10,
+                      borderRadius: 50,
+                    },
+                    isCompleted ? {backgroundColor: '#EAFFE1'} : {},
+                  ]}>
+                  <Text
+                    style={[isCompleted ? {color: 'green'} : {color: 'black'}]}>
+                    done
+                  </Text>
+                </View>
               </View>
-              <View
-                style={{
-                  backgroundColor: '#EAFFE1',
-                  paddingHorizontal: 10,
-                  borderRadius: 50,
-                }}>
-                <Text style={{color: 'green'}}>done</Text>
-              </View>
-            </View>
-          )}
+            );
+          }}
         />
       </View>
     </View>
@@ -152,7 +177,7 @@ const styles = StyleSheet.create({
     width: '96%',
     // height: 240,
     backgroundColor: 'white',
-    paddingBottom:20,
+    paddingBottom: 20,
     borderRadius: 10,
     gap: 2,
   },
