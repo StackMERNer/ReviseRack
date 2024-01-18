@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 import RNFS from 'react-native-fs';
 import PDFReader from './PDFReader';
-import {ScrollView} from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 interface FileObject {
   ctime: Date | undefined;
   isDirectory: () => boolean;
@@ -26,13 +27,10 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
       });
   }, [revisionsPath]);
   const [files, setFiles] = useState<FileObject[]>([]);
-  //   const [readFiles,setReadFileType] = useState('')l
   const [activePdf, setActivePdf] = useState('');
-
   const [filePath, setFilePath] = useState('');
   useEffect(() => {
     if (filePath) {
-      //   const readFiles = () => {
       RNFS.readDir(filePath)
         .then(result => {
           setFiles(result);
@@ -40,7 +38,6 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
         .catch(err => {
           console.log(err.message, err.code);
         });
-      //   };
     }
   }, [filePath]);
   if (activePdf) {
@@ -70,6 +67,28 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
     },
     // Add more ranges as needed
   ];
+  const storeData = async () => {
+    try {
+      await AsyncStorage.setItem('key', 'value');
+      // console.log('Data stored successfully.');
+    } catch (error) {
+      console.error('Error storing data:', error);
+    }
+  };
+
+  const retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('key');
+      if (value !== null) {
+        console.log('Retrieved data:', value);
+      } else {
+        console.log('No data found.');
+      }
+    } catch (error) {
+      console.error('Error retrieving data:', error);
+    }
+  };
+  
 
   useEffect(() => {
     const todaysRevision = revisionFolders[0];
