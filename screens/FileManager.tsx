@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Button,
   FlatList,
   Image,
   Modal,
@@ -93,11 +92,14 @@ function FileManagement() {
   };
   const selectPDF = async () => {
     try {
-      const selectedFile = await DocumentPicker.pickSingle({
+      const selectedFiles = await DocumentPicker.pick({
         type: [DocumentPicker.types.pdf],
+        allowMultiSelection: true,
       });
-      if (selectedFile.name && selectedFile.uri) {
-        copyPDFToAppFolder(selectedFile);
+      if (selectedFiles.length) {
+        selectedFiles.map(selectedFile => {
+          copyPDFToAppFolder(selectedFile);
+        });
       }
     } catch (error) {
       console.log('selecting error', error);

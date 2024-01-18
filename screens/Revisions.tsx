@@ -1,15 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import RNFS from 'react-native-fs';
-
 import PDFReader from './PDFReader';
-import Calendar from '../components/Calendar';
+import {ScrollView} from 'react-native-gesture-handler';
 interface FileObject {
   ctime: Date | undefined;
   isDirectory: () => boolean;
@@ -19,7 +12,7 @@ interface FileObject {
   path: string;
   size: number;
 }
-const Revisions = () => {
+const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
   const [revisionFolders, setRevisionFolders] = useState<FileObject[]>([]);
   const revisionsPath = `${RNFS.DocumentDirectoryPath}/Revisions`;
   useEffect(() => {
@@ -78,48 +71,107 @@ const Revisions = () => {
     // Add more ranges as needed
   ];
 
+  useEffect(() => {
+    const todaysRevision = revisionFolders[0];
+    // console.log('todaysRevision', todaysRevision);
+
+    if (todaysRevision) {
+      setFilePath(todaysRevision.path);
+    }
+  }, [revisionFolders]);
+  // console.log('filePath', filePath);
+  // console.log('files', files);
   return (
-    <>
-      <View style={styles.calendarContainer}>
-        {/* <Text>My Calendar</Text> */}
-        <Calendar colors={[]} ranges={dateRanges} />
+    <View
+      style={{
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 40,
+      }}>
+      <View>
+        {files.length > 1 && (
+          <Text
+            style={{
+              textAlign: 'center',
+              paddingVertical: 10,
+              fontSize: 20,
+              fontWeight: 'bold',
+            }}>
+            Todays Revisions
+          </Text>
+        )}
       </View>
       <View style={styles.revisionsContainer}>
-        {revisionFolders.map((revision, index) => (
-          <TouchableOpacity
-            onPress={() => setFilePath(revision.path)}
-            style={styles.revision}
-            key={index}>
-            <Text>{revision.name}</Text>
-          </TouchableOpacity>
+        {/* <FlatList
+          data={files}
+          // contentContainerStyle={{columnGap: 5}}
+          renderItem={({item, index}) => (
+            <View style={styles.revision}>
+              <View>
+                <Text
+                  onPress={() => onPdfSelect(item.path)}
+                  style={{fontSize: 18}}>
+                  {index + 1}. {item.name}
+                </Text>
+              </View>
+              <View
+                style={{
+                  backgroundColor: '#EAFFE1',
+                  paddingHorizontal: 10,
+                  borderRadius: 50,
+                }}>
+                <Text style={{color: 'green'}}>done</Text>
+              </View>
+            </View>
+          )}
+        /> */}
+
+        {files.map((item, index) => (
+          <View key={index} style={styles.revision}>
+            <View>
+              <Text
+                onPress={() => onPdfSelect(item.path)}
+                style={{fontSize: 18}}>
+                {index + 1}. {item.name}
+              </Text>
+            </View>
+            <View
+              style={{
+                backgroundColor: '#EAFFE1',
+                paddingHorizontal: 10,
+                borderRadius: 50,
+              }}>
+              <Text style={{color: 'green'}}>done</Text>
+            </View>
+          </View>
         ))}
-        <View style={styles.revisionList}>
-          {files.map((file, index) => (
-            <TouchableOpacity
-              onPress={() => setActivePdf(file.path)}
-              key={index}>
-              <Text>{file.name}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
       </View>
-    </>
+    </View>
   );
 };
 const styles = StyleSheet.create({
   revisionsContainer: {
     marginTop: 30,
-    paddingHorizontal: 10,
+    paddingHorizontal: 14,
+    // marginBottom: 20,
+    width: '96%',
+    backgroundColor: 'white',
+    // borderWidth: 1,
+    borderRadius: 10,
+    borderWidth: 2,
+    gap: 2,
   },
   revisionList: {
     borderWidth: 1,
-    gap: 10,
     padding: 10,
   },
   revision: {
-    borderWidth: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    padding: 10,
+
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   calendarContainer: {
     height: '50%',

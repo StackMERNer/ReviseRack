@@ -151,58 +151,63 @@ const Calendar = ({
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.calendarContainer}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => handleUpdatingMonth('decrease')}
-            style={styles.arrowButton}>
-            <Text style={styles.arrowText}>←</Text>
-          </TouchableOpacity>
-          <Text
-            style={
-              styles.headerText
-            }>{`${months[currMonth]} ${currYear}`}</Text>
-          <TouchableOpacity
-            onPress={() => handleUpdatingMonth('increase')}
-            style={styles.arrowButton}>
-            <Text style={styles.arrowText}>→</Text>
-          </TouchableOpacity>
-        </View>
+    <View
+      style={{width: '100%', justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.container}>
+        <View style={styles.calendarContainer}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => handleUpdatingMonth('decrease')}
+              style={styles.arrowButton}>
+              <Text style={styles.arrowText}>←</Text>
+            </TouchableOpacity>
+            <Text
+              style={
+                styles.headerText
+              }>{`${months[currMonth]} ${currYear}`}</Text>
+            <TouchableOpacity
+              onPress={() => handleUpdatingMonth('increase')}
+              style={styles.arrowButton}>
+              <Text style={styles.arrowText}>→</Text>
+            </TouchableOpacity>
+          </View>
 
-        {/* Calendar Body */}
-        <View style={styles.weekDays}>
-          {weekDays.map((week, index) => (
-            <Text style={styles.weekDay} key={index}>
-              {week}
-            </Text>
-          ))}
-        </View>
-        <FlatList
-          data={renderCalendar()}
-          numColumns={7}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({item}) => (
-            <View
-              style={[
-                styles.day,
-                item.isInRange && styles.bgBlue,
-                (item.isFirstDate || item.isRangeStart || item.isRoundedLeft) &&
-                  styles.roundLeft,
-                (item.isRangeEnd || item.isRoundedRight || item.isLastDate) &&
-                  styles.roundRight,
-                item.isBorderInRight && styles.borderRight,
-              ]}>
-              <Text
-                style={[
-                  item.isInRange ? styles.textWhite : styles.dayText,
-                  item.isToday && styles.today,
-                ]}>
-                {item.day}
+          {/* Calendar Body */}
+          <View style={styles.weekDays}>
+            {weekDays.map((week, index) => (
+              <Text style={styles.weekDay} key={index}>
+                {week}
               </Text>
-            </View>
-          )}
-        />
+            ))}
+          </View>
+          <FlatList
+            data={renderCalendar()}
+            numColumns={7}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => (
+              <View
+                style={[
+                  styles.day,
+                  item.isInRange && styles.bgBlue,
+                  (item.isFirstDate ||
+                    item.isRangeStart ||
+                    item.isRoundedLeft) &&
+                    styles.roundLeft,
+                  (item.isRangeEnd || item.isRoundedRight || item.isLastDate) &&
+                    styles.roundRight,
+                  item.isBorderInRight && styles.borderRight,
+                ]}>
+                <Text
+                  style={[
+                    item.isInRange ? styles.textWhite : styles.dayText,
+                    item.isToday && styles.today,
+                  ]}>
+                  {item.day}
+                </Text>
+              </View>
+            )}
+          />
+        </View>
       </View>
     </View>
   );
@@ -210,19 +215,19 @@ const Calendar = ({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    marginTop: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    // borderWidth: 1,
-    width: '94%',
+    width: '96%',
     borderRadius: 10,
-    // paddingVertical: 45,
+    paddingVertical: 25,
     paddingHorizontal: 15,
     elevation: 10,
     shadowColor: 'gray',
     backgroundColor: 'white',
     shadowOffset: {width: -2, height: 4},
-
+    marginHorizontal: 'auto',
+    marginVertical: 'auto',
     shadowOpacity: 1,
     shadowRadius: 3,
   },
@@ -232,7 +237,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   calendarContainer: {
-    width: '100%',
+    width: '98%',
   },
   weekDay: {fontSize: 16, color: 'black'},
   header: {
