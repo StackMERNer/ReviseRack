@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import Calendar from '../../components/Calendar';
-
 import Revisions from '../../screens/Revisions';
 import FileManagement from '../../screens/FileManager';
 import PDFReader from '../../screens/PDFReader';
@@ -10,7 +9,6 @@ interface Range {
   startDate: Date;
   endDate: Date;
 }
-
 export type RangeManagerType = {
   ranges: Range[];
   lastUpdated: number;
@@ -22,16 +20,16 @@ const HomeScreen = () => {
     nextRevisionIndex: 0,
     ranges: [],
   });
-  // console.log('ranges', ranges);
   useEffect(() => {
     AsyncStorage.getItem('RangeManager').then(res => {
-      // console.log('RangeManager', res);
       if (res) {
         setRangeManger(JSON.parse(res));
       }
     });
   }, []);
-  const renderHeader = () => <Calendar colors={[]} ranges={rangeManager.ranges} />;
+  const renderHeader = () => (
+    <Calendar colors={[]} ranges={rangeManager.ranges} />
+  );
   const [selectedPdf, setSelectedPdf] = useState('');
   if (selectedPdf) {
     return (
@@ -55,7 +53,9 @@ const HomeScreen = () => {
                 return (
                   <Revisions
                     rangeManager={rangeManager}
-                    onRangeManagerUpdate={updatedRangeManager => setRangeManger(updatedRangeManager)}
+                    onRangeManagerUpdate={updatedRangeManager =>
+                      setRangeManger(updatedRangeManager)
+                    }
                     onPdfSelect={pdfPath => setSelectedPdf(pdfPath)}
                   />
                 );
@@ -72,33 +72,6 @@ const HomeScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  calendarContainer: {
-    width: '100%',
-    marginTop: 10,
-    paddingVertical: 16,
-    marginHorizontal: 'auto',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 'auto',
-  },
-  addButton: {
-    // height: 50,
-    // width: 50,
-    position: 'absolute',
-    bottom: 30,
-    right: 20,
-    paddingVertical: 5,
-    paddingHorizontal: 15,
-    backgroundColor: 'black',
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  plusTest: {
-    color: '#fff',
-    fontSize: 20,
-  },
-});
+
 
 export default HomeScreen;

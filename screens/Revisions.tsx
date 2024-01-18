@@ -3,7 +3,7 @@ import {FlatList, StyleSheet, Text, View} from 'react-native';
 import RNFS from 'react-native-fs';
 import PDFReader from './PDFReader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { RangeManagerType } from '../navigation/screens/HomeScreen';
+import {RangeManagerType} from '../navigation/screens/HomeScreen';
 
 type RevisionCompletionType = {
   date: number;
@@ -30,6 +30,7 @@ const Revisions = ({
 }) => {
   const [revisionFolders, setRevisionFolders] = useState<FileObject[]>([]);
   const revisionsPath = `${RNFS.DocumentDirectoryPath}/Revisions`;
+  const currDate = new Date().getDate();
   useEffect(() => {
     RNFS.readDir(revisionsPath)
       .then(result => {
@@ -44,7 +45,7 @@ const Revisions = ({
   const [activePdf, setActivePdf] = useState('');
   const [filePath, setFilePath] = useState('');
   const [nextRevisionIndex, setNextRevisionIndex] = useState(0);
-  // const [rangeManager,setRangeManger] = useSta
+
   useEffect(() => {
     if (filePath) {
       RNFS.readDir(filePath)
@@ -71,7 +72,7 @@ const Revisions = ({
 
   const [revisionCompletion, setRevisionCompletion] =
     useState<RevisionCompletionType>({
-      date: new Date().getDate(),
+      date: currDate,
       completedNames: [],
       RevFolderName: '',
     });
@@ -92,13 +93,13 @@ const Revisions = ({
       if (res) {
         const revisionCompletionObj: RevisionCompletionType = JSON.parse(res);
         if (
-          revisionCompletionObj.date === new Date().getDate() &&
+          revisionCompletionObj.date === currDate &&
           revisionCompletionObj.completedNames.length === files.length &&
-          rangeManager.lastUpdated !== new Date().getDate()
+          rangeManager.lastUpdated !== currDate
         ) {
           updateRangeManager();
         }
-        if (revisionCompletionObj.date === new Date().getDate()) {
+        if (revisionCompletionObj.date === currDate) {
           setRevisionCompletion(revisionCompletionObj);
         }
       }
@@ -107,7 +108,7 @@ const Revisions = ({
       if (res) {
         const rangeManager: RangeManagerType = JSON.parse(res);
         const nextRevisionIndex = rangeManager.nextRevisionIndex ?? 0;
-        if (rangeManager.lastUpdated !== new Date().getDate()) {
+        if (rangeManager.lastUpdated !== currDate) {
           setNextRevisionIndex(nextRevisionIndex);
         }
       }
@@ -134,7 +135,7 @@ const Revisions = ({
     AsyncStorage.getItem('RangeManager').then(res => {
       let rangeManager: RangeManagerType = res
         ? JSON.parse(res)
-        : {lastUpdated: new Date().getDate(), nextRevisionIndex: 0, ranges: []};
+        : {lastUpdated: currDate, nextRevisionIndex: 0, ranges: []};
       let ranges = rangeManager.ranges;
       let lastRange = ranges[ranges.length - 1] ?? {
         startDate: new Date(),
@@ -148,7 +149,7 @@ const Revisions = ({
           : 0;
       const updatedRangeManager: RangeManagerType = {
         nextRevisionIndex: updatedNextRevisionIndex,
-        lastUpdated: new Date().getDate(),
+        lastUpdated: currDate,
         ranges: [...withoutLastRange, updatedLastRange].slice(-5),
       };
       AsyncStorage.setItem(
