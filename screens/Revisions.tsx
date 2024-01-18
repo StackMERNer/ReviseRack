@@ -73,20 +73,19 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
 
   useEffect(() => {
     const todaysRevision = revisionFolders[0];
-    // console.log('todaysRevision', todaysRevision);
-
     if (todaysRevision) {
       setFilePath(todaysRevision.path);
     }
   }, [revisionFolders]);
+  
+  
+
   return (
     <View
       style={{
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        // paddingBottom: 40,
-        
       }}>
       <View style={styles.revisionsContainer}>
         <View>
@@ -98,13 +97,12 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
                 fontSize: 20,
                 fontWeight: 'bold',
               }}>
-              Todays Revisions
+              Todays Revision
             </Text>
           )}
         </View>
         <FlatList
           data={files}
-          // contentContainerStyle={{columnGap: 5}}
           renderItem={({item, index}) => (
             <View style={styles.revision}>
               <View>
@@ -131,9 +129,9 @@ const Revisions = ({onPdfSelect}: {onPdfSelect: (pdfPath: string) => void}) => {
 };
 const styles = StyleSheet.create({
   revisionsContainer: {
-    marginTop: 15,
+    marginVertical: 15,
     width: '96%',
-    height: 240,
+    // height: 240,
     backgroundColor: 'white',
     paddingBottom:20,
     borderRadius: 10,

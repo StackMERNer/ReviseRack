@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {FlatList, StyleSheet, View} from 'react-native';
 import Calendar from '../../components/Calendar';
-import {FlatList, ScrollView} from 'react-native-gesture-handler';
+
 import Revisions from '../../screens/Revisions';
 import FileManagement from '../../screens/FileManager';
 import PDFReader from '../../screens/PDFReader';
@@ -39,31 +39,40 @@ const HomeScreen = () => {
   }
   return (
     <>
-      <View style={{maxHeight: '98%'}}>
+      {/* <ScrollView> */}
+      {/* <View style={{maxHeight: '98%'}}>
+          <Calendar colors={[]} ranges={dateRanges} />
+
+          <Revisions onPdfSelect={pdfPath => setSelectedPdf(pdfPath)} />
+        </View> */}
+      {/* </ScrollView> */}
+      {/* <View style={{maxHeight: '98%'}}>
         <Calendar colors={[]} ranges={dateRanges} />
 
         <Revisions onPdfSelect={pdfPath => setSelectedPdf(pdfPath)} />
-      </View>
+      </View> */}
 
-      {/* <FlatList
-        data={['header', 'revisions', 'fileManagement']}
-        keyExtractor={item => item}
-        renderItem={({item}) => {
-          switch (item) {
-            case 'header':
-              return renderHeader();
-            case 'revisions':
-              return (
-                <Revisions onPdfSelect={pdfPath => setSelectedPdf(pdfPath)} />
-              );
-            case 'fileManagement':
-              return <FileManagement />;
-            default:
-              return null;
-          }
-        }}
-        ListFooterComponent={<View style={{height: 200}} />}
-      /> */}
+      <View>
+        <FlatList
+          data={['header', 'revisions']}
+          keyExtractor={item => item}
+          renderItem={({item}) => {
+            switch (item) {
+              case 'header':
+                return renderHeader();
+              case 'revisions':
+                return (
+                  <Revisions onPdfSelect={pdfPath => setSelectedPdf(pdfPath)} />
+                );
+              case 'fileManagement':
+                return <FileManagement />;
+              default:
+                return null;
+            }
+          }}
+          // ListFooterComponent={<View style={{height: 200}} />}
+        />
+      </View>
     </>
   );
 };
