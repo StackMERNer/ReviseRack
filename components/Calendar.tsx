@@ -1,11 +1,6 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, TouchableOpacity, FlatList, StyleSheet} from 'react-native';
+import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 interface Range {
   startDate: Date;
   endDate: Date;
@@ -169,7 +164,8 @@ const Calendar = ({
             <TouchableOpacity
               onPress={() => handleUpdatingMonth('decrease')}
               style={styles.arrowButton}>
-              <Text style={styles.arrowText}>←</Text>
+              {/* <Text style={styles.arrowText}>←</Text> */}
+              <AntDesignIcons name="caretleft" size={15} />
             </TouchableOpacity>
             <Text style={styles.headerText}>{`${
               months[currMonth]
@@ -177,7 +173,7 @@ const Calendar = ({
             <TouchableOpacity
               onPress={() => handleUpdatingMonth('increase')}
               style={styles.arrowButton}>
-              <Text style={styles.arrowText}>→</Text>
+              <AntDesignIcons name="caretright" size={15} />
             </TouchableOpacity>
           </View>
 
@@ -258,7 +254,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   arrowButton: {
-    paddingHorizontal: 10,
+    padding: 5,
     backgroundColor: '#d3d3d3',
     borderRadius: 2,
   },
