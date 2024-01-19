@@ -2,7 +2,7 @@ import React from 'react';
 import {StatusBar} from 'react-native';
 import MainContainer from './navigation/MainContainer';
 
-const FilePicker = () => {
+const App = () => {
   return (
     <>
       <StatusBar backgroundColor="white" barStyle="dark-content" />
@@ -11,4 +11,4 @@ const FilePicker = () => {
   );
 };
 
-export default FilePicker;
+export default App;

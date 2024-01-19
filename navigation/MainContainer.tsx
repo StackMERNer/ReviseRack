@@ -1,19 +1,13 @@
 import React from 'react';
-
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import Material from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import HomeScreen from './screens/HomeScreen';
-
 import SettingsScreen from './screens/SettingsScreen';
 import ManageRevisionsScreen from './screens/ManageRevisionsScreen';
 
 //Screen names
 const homeName = 'ড্যাশবোর্ড';
-const detailsName = 'Details';
 const settingsName = 'সেটিংস';
 const revisionManagerName = 'ম্যানেজ রিভিশন';
 const Tab = createBottomTabNavigator();
@@ -26,16 +20,17 @@ const MainContainer = () => {
         screenOptions={({route}) => ({
           tabBarIcon: ({focused, color, size}) => {
             let iconName;
-            let rn = route.name;
-            if (rn === homeName) {
+            let routeName = route.name;
+            if (routeName === homeName) {
               iconName = focused ? 'view-dashboard' : 'view-dashboard-outline';
-            }  else if (rn === settingsName) {
-              iconName = focused ? 'account-settings' : 'account-settings-outline';
-            } else if (rn === revisionManagerName) {
+            } else if (routeName === settingsName) {
+              iconName = focused
+                ? 'account-settings'
+                : 'account-settings-outline';
+            } else if (routeName === revisionManagerName) {
               iconName = focused ? 'clipboard-list' : 'clipboard-list-outline';
             }
 
-            
             return (
               <Material name={iconName as string} size={size} color={color} />
             );
@@ -50,7 +45,6 @@ const MainContainer = () => {
           name={revisionManagerName}
           component={ManageRevisionsScreen}
         />
-        {/* <Tab.Screen name={detailsName} component={DetailsScreen} /> */}
         <Tab.Screen name={settingsName} component={SettingsScreen} />
       </Tab.Navigator>
     </NavigationContainer>

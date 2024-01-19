@@ -92,13 +92,6 @@ const Revisions = ({
     AsyncStorage.getItem('revisionCompletion').then(res => {
       if (res) {
         const revisionCompletionObj: RevisionCompletionType = JSON.parse(res);
-        if (
-          revisionCompletionObj.date === currDate &&
-          revisionCompletionObj.completedNames.length === files.length &&
-          rangeManager.lastUpdated !== currDate
-        ) {
-          updateRangeManager();
-        }
         if (revisionCompletionObj.date === currDate) {
           setRevisionCompletion(revisionCompletionObj);
         }
@@ -129,7 +122,23 @@ const Revisions = ({
       };
       AsyncStorage.setItem('revisionCompletion', JSON.stringify(updated))
         .then(res => {
-          console.log('stored', res);
+          // console.log('stored', res);
+          AsyncStorage.getItem('revisionCompletion').then(res => {
+            if (res) {
+              const revisionCompletionObj: RevisionCompletionType =
+                JSON.parse(res);
+              if (
+                revisionCompletionObj.date === currDate &&
+                revisionCompletionObj.completedNames.length === files.length &&
+                rangeManager.lastUpdated !== currDate
+              ) {
+                updateRangeManager();
+              }
+              if (revisionCompletionObj.date === currDate) {
+                setRevisionCompletion(revisionCompletionObj);
+              }
+            }
+          });
         })
         .catch(err => console.log('failed to store', err))
         .finally(() => onPdfSelect(file.path));
@@ -138,6 +147,7 @@ const Revisions = ({
     }
   };
   const updateRangeManager = () => {
+    // console.log('updating ranges');
     AsyncStorage.getItem('RangeManager').then(res => {
       let rangeManager: RangeManagerType = res
         ? JSON.parse(res)
@@ -162,10 +172,8 @@ const Revisions = ({
         'RangeManager',
         JSON.stringify(updatedRangeManager),
       ).then(() => {
-        console.log('updated');
         AsyncStorage.getItem('RangeManager').then(res => {
           if (res) {
-            console.log('new', res);
             let rangeManager: RangeManagerType = JSON.parse(res);
             onRangeManagerUpdate(rangeManager);
           }

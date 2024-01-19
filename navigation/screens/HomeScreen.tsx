@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 import Calendar from '../../components/Calendar';
 import Revisions from '../../components/Revisions';
 import FileManagement from '../../components/RevisionManager';
@@ -16,7 +16,7 @@ export type RangeManagerType = {
 };
 const HomeScreen = () => {
   const [rangeManager, setRangeManger] = useState<RangeManagerType>({
-    lastUpdated: new Date().getDate(),
+    lastUpdated: 0,
     nextRevisionIndex: 0,
     ranges: [],
   });
@@ -32,6 +32,7 @@ const HomeScreen = () => {
     <Calendar colors={[]} ranges={rangeManager.ranges} />
   );
   const [selectedPdf, setSelectedPdf] = useState('');
+  
   if (selectedPdf) {
     return (
       <PDFReader
@@ -54,9 +55,10 @@ const HomeScreen = () => {
                 return (
                   <Revisions
                     rangeManager={rangeManager}
-                    onRangeManagerUpdate={updatedRangeManager =>
-                      setRangeManger(updatedRangeManager)
-                    }
+                    onRangeManagerUpdate={updatedRangeManager => {
+                      console.log('updated', updatedRangeManager);
+                      setRangeManger(updatedRangeManager);
+                    }}
                     onPdfSelect={pdfPath => setSelectedPdf(pdfPath)}
                   />
                 );

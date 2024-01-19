@@ -16,6 +16,7 @@ import DocumentPicker from 'react-native-document-picker';
 import PDFReader from './PDFReader';
 interface Folder {
   name: string;
+  path:string
 }
 
 function FileManagement() {
