@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Dimensions,
   Linking,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -15,11 +16,12 @@ const PDFReader = ({
   onPressBackBtn,
 }: {
   pdfFilePath: string;
-  onPressBackBtn: () => void;
+  onPressBackBtn: (currentPath: string) => void;
 }) => {
   //one url type: /data/user/0/com.myreader/files/Revisions/Revision 1/test.pdf
   const [totalPages, setTotalPages] = useState(0);
   const [activePage, setActivePage] = useState(1);
+  const [displayAblePageNo, setDisplayAblePageNo] = useState(0);
   useEffect(() => {
     if (totalPages) {
       setRandomPage();
@@ -29,51 +31,54 @@ const PDFReader = ({
     const randomPage = Math.round(Math.random() * totalPages);
     setActivePage(randomPage);
   };
+  // console.log('pdfFilePath', pdfFilePath);
+  // console.log('activePage', activePage);
   return (
-    <>
+    <View style={{flex: 1}}>
       <View style={styles.pdfNavBar}>
-        <TouchableOpacity onPress={onPressBackBtn}>
+        <TouchableOpacity onPress={() => onPressBackBtn(pdfFilePath)}>
           <Text style={styles.backBtn}>←</Text>
         </TouchableOpacity>
         <View style={styles.navBarInfo}>
           <Text style={{color: '#fff'}}>
-            {activePage}/{totalPages}
+            {displayAblePageNo}/{totalPages}
           </Text>
         </View>
       </View>
+      <ScrollView contentContainerStyle={{flex: 1}}>
+        <Pdf
+          source={{
+            uri: pdfFilePath,
+            cache: true,
+          }}
+          page={activePage}
+          onPageChanged={page => {
+            setDisplayAblePageNo(page);
+          }}
+          style={styles.pdf}
+          onError={error => {
+            console.error(error);
+          }}
+          onLoadComplete={pages => {
+            setTotalPages(pages);
+          }}
+          scale={1.0}
+          minScale={0.5}
+          maxScale={3.0}
+          onPressLink={link => Linking.openURL(link)}
 
-      <Pdf
-        trustAllCerts={false}
-        source={{
-          uri: pdfFilePath,
-        }}
-        page={activePage}
-        scale={1.0}
-        minScale={0.5}
-        maxScale={3.0}
-        renderActivityIndicator={() => (
-          <ActivityIndicator color="black" size="large" />
-        )}
-        // enablePaging={true}
-        // onLoadProgress={percentage => console.log(`Loading :${percentage}`)}
-        onPageChanged={page => {
-          setActivePage(page);
-        }}
-        onLoadComplete={pages => {
-          setTotalPages(pages);
-        }}
-        onError={error => console.log(error)}
-        onPressLink={link => Linking.openURL(link)}
-        // onScaleChanged={scale => console.log(scale)}
-        // spacing={10}
-        style={styles.pdf}
-      />
+          // renderActivityIndicator={() => (
+          //   <ActivityIndicator color="black" size="large" />
+          // )}
+        />
+      </ScrollView>
+
       <View>
         <TouchableOpacity onPress={setRandomPage} style={styles.shuffleBtn}>
           <Text style={styles.shuffleBtnTxt}>Shuffle</Text>
         </TouchableOpacity>
       </View>
-    </>
+    </View>
   );
 };
 const styles = StyleSheet.create({

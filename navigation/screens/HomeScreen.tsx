@@ -27,6 +27,7 @@ const HomeScreen = () => {
       }
     });
   }, []);
+  // console.log('rangeManager', rangeManager);
   const renderHeader = () => (
     <Calendar colors={[]} ranges={rangeManager.ranges} />
   );
@@ -71,7 +72,5 @@ const HomeScreen = () => {
     </>
   );
 };
-
-
 
 export default HomeScreen;

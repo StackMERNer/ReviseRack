@@ -110,6 +110,12 @@ const Revisions = ({
         const nextRevisionIndex = rangeManager.nextRevisionIndex ?? 0;
         if (rangeManager.lastUpdated !== currDate) {
           setNextRevisionIndex(nextRevisionIndex);
+        } else {
+          setNextRevisionIndex(
+            rangeManager.nextRevisionIndex > 1
+              ? rangeManager.nextRevisionIndex - 1
+              : 0,
+          );
         }
       }
     });
@@ -156,8 +162,10 @@ const Revisions = ({
         'RangeManager',
         JSON.stringify(updatedRangeManager),
       ).then(() => {
+        console.log('updated');
         AsyncStorage.getItem('RangeManager').then(res => {
           if (res) {
+            console.log('new', res);
             let rangeManager: RangeManagerType = JSON.parse(res);
             onRangeManagerUpdate(rangeManager);
           }
@@ -182,7 +190,7 @@ const Revisions = ({
                 fontSize: 20,
                 fontWeight: 'bold',
               }}>
-              Todays Revision: {todaysRevFolder?.name}
+              আজকের রিভিশন : {todaysRevFolder?.name}
             </Text>
           )}
         </View>

@@ -123,31 +123,41 @@ function FileManagement() {
       console.log('error occurred', error);
     }
   };
+
   const [pdfFilePath, setPdfFilePath] = useState('');
 
   const folderNames = currPath.split('/');
   const isInsideRevisions = folderNames[folderNames.length - 2] === 'Revisions';
 
+  function removeLastFileName(filePath: string) {
+    // Find the last occurrence of '/' in the file path
+    const lastSlashIndex = filePath.lastIndexOf('/');
+
+    // If a slash is found, remove the last part of the path (file name)
+    if (lastSlashIndex !== -1) {
+      return filePath.substring(0, lastSlashIndex);
+    } else {
+      // If no slash is found, return the original path
+      return filePath;
+    }
+  }
+
   return (
     <View style={styles.container}>
-      <View style={styles.backBtnContainer}>
-        {currPath === RNFS.DocumentDirectoryPath ? null : (
-          <TouchableOpacity
-            onPress={() => {
-              setCurrPath(RNFS.DocumentDirectoryPath);
-              setPdfFilePath('');
-            }}
-            style={styles.backBtn}>
-            <Text style={styles.backBtnText}>←</Text>
-          </TouchableOpacity>
-        )}
-
-        {/* <View style={styles.pathContainer}>
-          <Text style={styles.pathText}>{currPath}</Text>
-        </View> */}
-      </View>
       {!pdfFilePath ? (
         <View style={{width: '100%', height: '100%'}}>
+          <View style={styles.backBtnContainer}>
+            {currPath === RNFS.DocumentDirectoryPath ? null : (
+              <TouchableOpacity
+                onPress={() => {
+                  setCurrPath(RNFS.DocumentDirectoryPath);
+                  setPdfFilePath('');
+                }}
+                style={styles.backBtn}>
+                <Text style={styles.backBtnText}>←</Text>
+              </TouchableOpacity>
+            )}
+          </View>
           {isInsideRevisions && (
             <TouchableOpacity
               style={{
@@ -156,6 +166,7 @@ function FileManagement() {
                 borderRadius: 10,
                 position: 'absolute',
                 right: 10,
+                bottom: 60,
               }}
               onPress={selectPDF}>
               <Text style={{color: 'white'}}>Add Pdf</Text>
@@ -242,7 +253,13 @@ function FileManagement() {
           </Modal>
         </View>
       ) : (
-        <PDFReader pdfFilePath={pdfFilePath} />
+        <PDFReader
+          onPressBackBtn={currentPath =>
+            // setCurrPath(removeLastFileName(currentPath))
+            setPdfFilePath('')
+          }
+          pdfFilePath={pdfFilePath}
+        />
       )}
     </View>
   );
@@ -254,7 +271,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 40,
+    // paddingVertical: 40,
   },
 
   addButton: {
@@ -329,17 +346,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     // borderWidth: 1,
-    padding: 10,
+    // padding: 10,
   },
   folderImage: {transform: [{scale: 0.6}]},
   backBtnContainer: {
     flexDirection: 'row', // Arrange children horizontally
     alignItems: 'center', // Align children vertically at the center
-    padding: 10, // Add padding for better appearance
+    // paddingTop: 60,
   },
   backBtn: {
     flex: 1, // Takes 1 part of the available space
-    marginRight: 10, // Add some margin between the button and text
+    // marginTop: 10,
     backgroundColor: 'black',
     padding: 10,
     borderRadius: 5,

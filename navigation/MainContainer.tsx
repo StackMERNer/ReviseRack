@@ -4,17 +4,18 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Material from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import HomeScreen from './screens/HomeScreen';
-import DetailsScreen from './screens/DetailsScreen';
+
 import SettingsScreen from './screens/SettingsScreen';
 import ManageRevisionsScreen from './screens/ManageRevisionsScreen';
 
 //Screen names
-const homeName = 'Home';
+const homeName = 'ড্যাশবোর্ড';
 const detailsName = 'Details';
-const settingsName = 'Settings';
-const revisionManagerName = 'Manage Revisions';
+const settingsName = 'সেটিংস';
+const revisionManagerName = 'ম্যানেজ রিভিশন';
 const Tab = createBottomTabNavigator();
 
 const MainContainer = () => {
@@ -27,18 +28,16 @@ const MainContainer = () => {
             let iconName;
             let rn = route.name;
             if (rn === homeName) {
-              iconName = focused ? 'home' : 'home-outline';
-            } else if (rn === detailsName) {
-              iconName = focused ? 'list' : 'list-outline';
-            } else if (rn === settingsName) {
-              iconName = focused ? 'settings' : 'settings-outline';
+              iconName = focused ? 'view-dashboard' : 'view-dashboard-outline';
+            }  else if (rn === settingsName) {
+              iconName = focused ? 'account-settings' : 'account-settings-outline';
             } else if (rn === revisionManagerName) {
-              iconName = focused ? 'list' : 'list-outline';
+              iconName = focused ? 'clipboard-list' : 'clipboard-list-outline';
             }
 
-            // You can return any component that you like here!
+            
             return (
-              <Ionicons name={iconName as string} size={size} color={color} />
+              <Material name={iconName as string} size={size} color={color} />
             );
           },
           activeTintColor: 'green',
