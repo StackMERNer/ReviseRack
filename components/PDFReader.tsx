@@ -31,8 +31,6 @@ const PDFReader = ({
     const randomPage = Math.round(Math.random() * totalPages);
     setActivePage(randomPage);
   };
-  // console.log('pdfFilePath', pdfFilePath);
-  // console.log('activePage', activePage);
   return (
     <View style={{flex: 1}}>
       <View style={styles.pdfNavBar}>

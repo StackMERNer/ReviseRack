@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import Calendar from '../../components/Calendar';
-import Revisions from '../../screens/Revisions';
-import FileManagement from '../../screens/FileManager';
-import PDFReader from '../../screens/PDFReader';
+import Revisions from '../../components/Revisions';
+import FileManagement from '../../components/RevisionManager';
+import PDFReader from '../../components/PDFReader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 interface Range {
   startDate: Date;
