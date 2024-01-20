@@ -37,7 +37,6 @@ const MainContainer = () => {
             );
           },
           activeTintColor: 'green',
-          style: {padding: 10, height: 70},
           labelStyle: {paddingBottom: 10, fontSize: 14},
           inactiveTintColor: 'grey',
         })}>

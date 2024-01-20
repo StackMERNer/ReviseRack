@@ -19,7 +19,7 @@ interface Folder {
   path:string
 }
 
-function FileManagement() {
+function RevisionManager() {
   const [modalVisible, setModalVisible] = useState(false);
   const [currPath, setCurrPath] = useState(RNFS.DocumentDirectoryPath);
   const [folders, setFolders] = useState<Folder[]>([]);
@@ -65,7 +65,7 @@ function FileManagement() {
         // console.log('You can use the Storage');
         getAllFolders();
       } else {
-        console.log(granted);
+        // console.log(granted);
         console.log('Storage permission denied');
       }
     } catch (err) {
@@ -356,16 +356,13 @@ const styles = StyleSheet.create({
     // paddingTop: 60,
   },
   backBtn: {
-    flex: 1, // Takes 1 part of the available space
-    // marginTop: 10,
+    flex: 1,
     backgroundColor: 'black',
-    padding: 10,
-    borderRadius: 5,
+    padding: 4,
     justifyContent: 'center',
-    alignItems: 'center',
   },
   backBtnText: {
-    fontSize: 20,
+    fontSize: 30,
     color: 'white',
     fontWeight: 'bold',
   },
@@ -381,4 +378,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FileManagement;
+export default RevisionManager;

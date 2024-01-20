@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, FlatList, StyleSheet} from 'react-native';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
+import {primaryColor} from '../utils/colors';
 interface Range {
   startDate: Date;
   endDate: Date;
@@ -29,30 +30,20 @@ const Calendar = ({
   const [currYear, setCurrYear] = useState(currentDate.getFullYear());
   const [currMonth, setCurrMonth] = useState(currentDate.getMonth());
   const months = [
-    'জানুয়ারি',
-    'ফেব্রুয়ারি',
-    'মার্চ',
-    'এপ্রিল',
-    'মে',
-    'জুন',
-    'জুলাই',
-    'আগস্ট',
-    'সেপ্টেম্বর',
-    'অক্টোবর',
-    'নভেম্বর',
-    'ডিসেম্বর',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
-  function convertEnglishToBengali(englishNumber: string) {
-    const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-
-    // Using regular expression to replace each English digit with its corresponding Bengali digit
-    const bengaliNumber = englishNumber.replace(/\d/g, match => {
-      return bengaliDigits[parseInt(match, 10)];
-    });
-
-    return bengaliNumber;
-  }
   const weekDays = ['রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'শুক্র', 'শনি'];
   const renderCalendar = () => {
     let date = new Date();
@@ -169,7 +160,7 @@ const Calendar = ({
             </TouchableOpacity>
             <Text style={styles.headerText}>{`${
               months[currMonth]
-            } ${convertEnglishToBengali(currYear.toString())}`}</Text>
+            } ${currYear.toString()}`}</Text>
             <TouchableOpacity
               onPress={() => handleUpdatingMonth('increase')}
               style={styles.arrowButton}>
@@ -193,7 +184,7 @@ const Calendar = ({
               <View
                 style={[
                   styles.day,
-                  item.isInRange && styles.bgBlue,
+                  item.isInRange && styles.coloredBg,
                   (item.isFirstDate ||
                     item.isRangeStart ||
                     item.isRoundedLeft) &&
@@ -208,7 +199,7 @@ const Calendar = ({
                     item.isToday && styles.today,
                     item.inactive && {color: 'lightgray'},
                   ]}>
-                  {convertEnglishToBengali(item.day.toString())}
+                  {item.day.toString()}
                 </Text>
               </View>
             )}
@@ -279,12 +270,12 @@ const styles = StyleSheet.create({
   //   },
   today: {
     borderBottomWidth: 3,
-    borderBottomColor: 'blue',
+    borderBottomColor: primaryColor,
     // backgroundColor: 'blue', // Adjust color as needed
   },
   // inRange:{},
-  bgBlue: {
-    backgroundColor: 'blue',
+  coloredBg: {
+    backgroundColor: primaryColor,
   },
   textWhite: {
     color: 'white',

@@ -32,7 +32,7 @@ const HomeScreen = () => {
     <Calendar colors={[]} ranges={rangeManager.ranges} />
   );
   const [selectedPdf, setSelectedPdf] = useState('');
-  
+
   if (selectedPdf) {
     return (
       <PDFReader

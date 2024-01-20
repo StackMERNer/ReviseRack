@@ -1,9 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import RNFS from 'react-native-fs';
 import PDFReader from './PDFReader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {RangeManagerType} from '../navigation/screens/HomeScreen';
+
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import { primaryColor } from '../utils/colors';
 
 type RevisionCompletionType = {
   date: number;
@@ -107,6 +117,8 @@ const Revisions = ({
           setNextRevisionIndex(
             rangeManager.nextRevisionIndex > 1
               ? rangeManager.nextRevisionIndex - 1
+              : revisionFolders.length
+              ? revisionFolders.length - 1
               : 0,
           );
         }
@@ -193,17 +205,18 @@ const Revisions = ({
           {files.length > 1 && (
             <Text
               style={{
-                textAlign: 'center',
+                // textAlign: 'center',
                 paddingVertical: 10,
                 fontSize: 20,
                 fontWeight: 'bold',
               }}>
-              আজকের রিভিশন : {todaysRevFolder?.name}
+              To Read : {todaysRevFolder?.name}
             </Text>
           )}
         </View>
         <FlatList
           data={files}
+          // contentContainerStyle={{gap: 2}}
           renderItem={({item, index}) => {
             const isCompleted = revisionCompletion.completedNames.includes(
               item.name ?? '',
@@ -212,13 +225,38 @@ const Revisions = ({
             return (
               <View style={styles.revision}>
                 <View>
-                  <Text
-                    onPress={() => handlePdfClick(item)}
-                    style={{fontSize: 18}}>
-                    {index + 1}. {item.name}
-                  </Text>
+                  <TouchableOpacity onPress={() => handlePdfClick(item)}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}>
+                      <View>
+                        <Image
+                          style={{
+                            height: 45,
+                            objectFit: 'contain',
+                          }}
+                          source={require('./../assets/images/pdficon.png')}
+                        />
+                      </View>
+                      <View>
+                        <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+                          {index + 1}. {item.name}
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
                 </View>
-                <View
+                <View>
+                  <AntDesign
+                    name="rightcircle"
+                    style={{color: primaryColor}}
+                    size={25}
+                  />
+                </View>
+                {/* <View
                   style={[
                     isCompleted
                       ? {backgroundColor: '#EAFFE1'}
@@ -234,7 +272,7 @@ const Revisions = ({
                     style={[isCompleted ? {color: 'green'} : {color: 'black'}]}>
                     {isCompleted ? 'done' : 'pending'}
                   </Text>
-                </View>
+                </View> */}
               </View>
             );
           }}
@@ -250,6 +288,7 @@ const styles = StyleSheet.create({
     // height: 240,
     backgroundColor: 'white',
     paddingBottom: 20,
+    paddingHorizontal: 15,
     borderRadius: 10,
     gap: 2,
   },
@@ -258,11 +297,13 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   revision: {
-    padding: 10,
-
+    padding: 5,
+    marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     width: '100%',
+    backgroundColor: '#FCF2E7',
   },
   calendarContainer: {
     height: '50%',
