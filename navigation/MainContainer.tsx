@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Material from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -8,14 +8,21 @@ import SettingsScreen from './screens/SettingsScreen';
 import ManageRevisionsScreen from './screens/ManageRevisionsScreen';
 
 //Screen names
-const homeName = 'ড্যাশবোর্ড';
-const settingsName = 'সেটিংস';
-const revisionManagerName = 'ম্যানেজ রিভিশন';
+const homeName = 'Dashboard';
+const settingsName = 'Profile';
+const revisionManagerName = 'Manage Revision';
 const Tab = createBottomTabNavigator();
 
 const MainContainer = () => {
+  const MyTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: 'white',
+    },
+  };
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={MyTheme}>
       <Tab.Navigator
         initialRouteName={homeName}
         screenOptions={({route}) => ({

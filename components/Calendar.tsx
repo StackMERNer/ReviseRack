@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, FlatList, StyleSheet} from 'react-native';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
-import {primaryColor} from '../utils/colors';
+import {primaryColor, secondaryColor} from '../utils/colors';
 interface Range {
   startDate: Date;
   endDate: Date;
@@ -44,7 +44,8 @@ const Calendar = ({
     'December',
   ];
 
-  const weekDays = ['রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'শুক্র', 'শনি'];
+  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
   const renderCalendar = () => {
     let date = new Date();
     let firstDayofMonth = new Date(currYear, currMonth, 1).getDay(),
@@ -156,7 +157,7 @@ const Calendar = ({
               onPress={() => handleUpdatingMonth('decrease')}
               style={styles.arrowButton}>
               {/* <Text style={styles.arrowText}>←</Text> */}
-              <AntDesignIcons name="caretleft" size={15} />
+              <AntDesignIcons name="caretleft" color={'white'} size={15} />
             </TouchableOpacity>
             <Text style={styles.headerText}>{`${
               months[currMonth]
@@ -164,7 +165,7 @@ const Calendar = ({
             <TouchableOpacity
               onPress={() => handleUpdatingMonth('increase')}
               style={styles.arrowButton}>
-              <AntDesignIcons name="caretright" size={15} />
+              <AntDesignIcons name="caretright" color={'white'} size={15} />
             </TouchableOpacity>
           </View>
 
@@ -213,15 +214,16 @@ const Calendar = ({
 const styles = StyleSheet.create({
   container: {
     marginTop: 12,
+
     alignItems: 'center',
     justifyContent: 'center',
-    width: '96%',
+    width: '94%',
     borderRadius: 10,
     paddingVertical: 25,
     paddingHorizontal: 15,
     // elevation: 10,
     shadowColor: 'gray',
-    backgroundColor: 'white',
+    backgroundColor: secondaryColor,
     shadowOffset: {width: -2, height: 4},
     marginHorizontal: 'auto',
     marginVertical: 'auto',
@@ -246,15 +248,16 @@ const styles = StyleSheet.create({
   },
   arrowButton: {
     padding: 5,
-    backgroundColor: '#d3d3d3',
-    borderRadius: 2,
+    // backgroundColor: '#d3d3d3',
+    backgroundColor: primaryColor,
+    borderRadius: 6,
   },
   arrowText: {
     fontSize: 20,
     fontWeight: 'bold',
   },
   headerText: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   day: {

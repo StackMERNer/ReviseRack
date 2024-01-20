@@ -22,11 +22,7 @@ const PDFReader = ({
   const [totalPages, setTotalPages] = useState(0);
   const [activePage, setActivePage] = useState(1);
   const [displayAblePageNo, setDisplayAblePageNo] = useState(0);
-  useEffect(() => {
-    if (totalPages) {
-      setRandomPage();
-    }
-  }, [totalPages]);
+
   const setRandomPage = () => {
     const randomPage = Math.round(Math.random() * totalPages);
     setActivePage(randomPage);
