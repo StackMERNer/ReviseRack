@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -30,7 +30,21 @@ const Revisions = ({
   completedRevisionsContainer: RevisionCompletionContainerType;
 }) => {
   const [activePdf, setActivePdf] = useState('');
-
+  const [pendingRevisions, setPendingRevisions] = useState<FileObject[]>([]);
+  const [completedRevisions, setCompletedRevisions] = useState<FileObject[]>(
+    [],
+  );
+  useEffect(() => {
+    const completed = files.filter(file =>
+      completedRevisionsContainer.completedNames.includes(file.name ?? ''),
+    );
+    const pending = files.filter(
+      file =>
+        !completedRevisionsContainer.completedNames.includes(file.name ?? ''),
+    );
+    setCompletedRevisions(completed);
+    setPendingRevisions(pending);
+  }, [completedRevisionsContainer, files]);
   if (activePdf) {
     return (
       <PDFReader
@@ -47,19 +61,11 @@ const Revisions = ({
         alignItems: 'center',
       }}>
       <View style={styles.revisionsContainer}>
-        {files.filter(file =>
-          completedRevisionsContainer.completedNames.includes(file.name ?? ''),
-        ).length > 0 && (
+        {completedRevisions.length > 0 && (
           <View>
             <View>
               {files.length > 0 && (
-                <Text
-                  style={{
-                    // textAlign: 'center',
-                    paddingVertical: 10,
-                    fontSize: 20,
-                    fontWeight: 'bold',
-                  }}>
+                <Text style={styles.heading}>
                   Completed{' '}
                   {rangeManager.lastUpdated === new Date().getDate() &&
                     ': ' + todaysRevFolder?.name}
@@ -67,117 +73,89 @@ const Revisions = ({
               )}
             </View>
             <FlatList
-              data={files.filter(file =>
-                completedRevisionsContainer.completedNames.includes(
-                  file.name ?? '',
-                ),
-              )}
+              data={completedRevisions}
               renderItem={({item, index}) => {
                 return (
                   <View style={[styles.revision, styles.completedRevision]}>
-                    <View>
-                      <TouchableOpacity onPress={() => onPdfSelect(item)}>
-                        <View
+                    <TouchableOpacity
+                      style={styles.pdfNameAndIconContainer}
+                      onPress={() => onPdfSelect(item)}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}>
+                        <Image
                           style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
+                            height: 45,
+                            objectFit: 'contain',
+                          }}
+                          source={require('./../assets/images/pdficon.png')}
+                        />
+
+                        <Text
+                          style={{
+                            fontSize: 18,
+                            fontWeight: 'bold',
+                            textTransform: 'capitalize',
                           }}>
-                          <View>
-                            <Image
-                              style={{
-                                height: 45,
-                                objectFit: 'contain',
-                              }}
-                              source={require('./../assets/images/pdficon.png')}
-                            />
-                          </View>
-                          <View>
-                            <Text
-                              style={{
-                                fontSize: 18,
-                                fontWeight: 'bold',
-                                textTransform: 'capitalize',
-                              }}>
-                              {index + 1}. {item.name?.slice(0, -4)}
-                            </Text>
-                          </View>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                    <View>
-                      <AntDesign
-                        name="checkcircle"
-                        style={{color: greenPrimary}}
-                        size={25}
-                      />
-                    </View>
+                          {index + 1}. {item.name?.slice(0, -4)}
+                        </Text>
+                      </View>
+                      <View>
+                        <AntDesign
+                          name="checkcircle"
+                          style={{color: greenPrimary}}
+                          size={25}
+                        />
+                      </View>
+                    </TouchableOpacity>
                   </View>
                 );
               }}
             />
           </View>
         )}
-        {files.length > 0 &&
-          files.filter(
-            file =>
-              !completedRevisionsContainer.completedNames.includes(
-                file.name ?? '',
-              ),
-          ).length > 0 && (
+        {files.length > 0 && pendingRevisions.length > 0 && (
+          <View>
             <View>
-              <View>
-                {files.length > 0 && (
-                  <Text
-                    style={{
-                      paddingVertical: 10,
-                      fontSize: 20,
-                      fontWeight: 'bold',
-                    }}>
-                    To Read : {todaysRevFolder?.name}
-                  </Text>
-                )}
-              </View>
-              <FlatList
-                data={files.filter(
-                  file =>
-                    !completedRevisionsContainer.completedNames.includes(
-                      file.name ?? '',
-                    ),
-                )}
-                // contentContainerStyle={{gap: 2}}
-                renderItem={({item, index}) => {
-                  return (
-                    <View style={[styles.revision, styles.pendingRevision]}>
-                      <View>
-                        <TouchableOpacity onPress={() => onPdfSelect(item)}>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                            }}>
-                            <View>
-                              <Image
-                                style={{
-                                  height: 45,
-                                  objectFit: 'contain',
-                                }}
-                                source={require('./../assets/images/pdficon.png')}
-                              />
-                            </View>
-                            <View>
-                              <Text
-                                style={{
-                                  fontSize: 18,
-                                  fontWeight: 'bold',
-                                  textTransform: 'capitalize',
-                                }}>
-                                {index + 1}. {item.name?.slice(0, -4)}
-                              </Text>
-                            </View>
-                          </View>
-                        </TouchableOpacity>
+              {files.length > 0 && (
+                <Text style={styles.heading}>
+                  To Read : {todaysRevFolder?.name}
+                </Text>
+              )}
+            </View>
+            <FlatList
+              data={pendingRevisions}
+              renderItem={({item, index}) => {
+                return (
+                  <View style={[styles.revision, styles.pendingRevision]}>
+                    <TouchableOpacity
+                      style={styles.pdfNameAndIconContainer}
+                      onPress={() => onPdfSelect(item)}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}>
+                        <Image
+                          style={{
+                            height: 45,
+                            objectFit: 'contain',
+                          }}
+                          source={require('./../assets/images/pdficon.png')}
+                        />
+
+                        <Text
+                          style={{
+                            fontSize: 18,
+                            fontWeight: 'bold',
+                            textTransform: 'capitalize',
+                          }}>
+                          {index + 1}. {item.name?.slice(0, -4)}
+                        </Text>
                       </View>
                       <View>
                         <AntDesign
@@ -186,12 +164,13 @@ const Revisions = ({
                           size={25}
                         />
                       </View>
-                    </View>
-                  );
-                }}
-              />
-            </View>
-          )}
+                    </TouchableOpacity>
+                  </View>
+                );
+              }}
+            />
+          </View>
+        )}
       </View>
     </View>
   );
@@ -207,9 +186,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     gap: 2,
   },
+  heading: {
+    paddingVertical: 10,
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
   revisionList: {
     borderWidth: 1,
     padding: 10,
+  },
+  pdfNameAndIconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    alignItems: 'center',
   },
   revision: {
     paddingRight: 16,

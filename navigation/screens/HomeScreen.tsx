@@ -71,7 +71,6 @@ const HomeScreen = () => {
     }
   }, [filePath]);
   const renderHeader = () => <Calendar ranges={rangeManager.ranges} />;
-  console.log(nextRevisionIndex);
   useEffect(() => {
     AsyncStorage.getItem('RangeManager').then(res =>
       console.log('RangeManager', res),
@@ -86,9 +85,6 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    // if (nextRevisionIndex > revisionFolders.length) {
-    //   setNextRevisionIndex(0);
-    // }
     const todaysRevision = revisionFolders[nextRevisionIndex];
     if (todaysRevision) {
       setTodaysRevFolder(todaysRevision);
@@ -248,11 +244,6 @@ const HomeScreen = () => {
                   <Revisions
                     files={files}
                     rangeManager={rangeManager}
-                    // onRangeManagerUpdate={updatedRangeManager => {
-                    //   showToastAndConfetti();
-                    //   setRangeManger(updatedRangeManager);
-                    // }}
-                    
                     completedRevisionsContainer={completedRevisionsContainer}
                     onPdfSelect={pdfPath => setSelectedPdf(pdfPath)}
                     todaysRevFolder={todaysRevFolder}
