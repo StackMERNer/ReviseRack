@@ -9,7 +9,7 @@ import {primaryColor} from '../utils/colors';
 
 //Screen names
 const homeName = 'Home';
-const revisionManagerName = 'Manage Revision';
+const revisionsManagerName = 'Manage Revisions';
 const Tab = createBottomTabNavigator();
 
 const MainContainer = () => {
@@ -32,7 +32,7 @@ const MainContainer = () => {
             if (routeName === homeName) {
               iconName = focused ? 'home' : 'home-outline';
               color = focused ? primaryColor : 'black';
-            } else if (routeName === revisionManagerName) {
+            } else if (routeName === revisionsManagerName) {
               iconName = focused ? 'clipboard-list' : 'clipboard-list-outline';
               color = focused ? primaryColor : 'black';
             }
@@ -41,12 +41,12 @@ const MainContainer = () => {
               <Material name={iconName as string} size={size} color={color} />
             );
           },
-          labelStyle: {paddingBottom: 10, fontSize: 14},
-          tabBarActiveTintColor:primaryColor
+          labelStyle: {paddingBottom: 10, fontSize: 20},
+          tabBarActiveTintColor: primaryColor,
         })}>
         <Tab.Screen name={homeName} component={HomeScreen} />
         <Tab.Screen
-          name={revisionManagerName}
+          name={revisionsManagerName}
           component={ManageRevisionsScreen}
         />
       </Tab.Navigator>
