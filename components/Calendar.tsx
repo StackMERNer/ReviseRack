@@ -21,10 +21,8 @@ interface dateType {
 }
 const Calendar = ({
   ranges = [],
-  colors = [],
 }: {
   ranges: Range[];
-  colors: string[];
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currYear, setCurrYear] = useState(currentDate.getFullYear());
@@ -131,7 +129,7 @@ const Calendar = ({
       dates.push({day: i - lastDayofMonth + 1, inactive: true});
     }
     return dates;
-  }; //here ends
+  }; 
 
   const handleUpdatingMonth = (method: 'increase' | 'decrease') => {
     if (method === 'increase') {
@@ -214,14 +212,12 @@ const Calendar = ({
 const styles = StyleSheet.create({
   container: {
     marginTop: 12,
-
     alignItems: 'center',
     justifyContent: 'center',
     width: '94%',
     borderRadius: 10,
     paddingVertical: 25,
     paddingHorizontal: 15,
-    // elevation: 10,
     shadowColor: 'gray',
     backgroundColor: secondaryColor,
     shadowOffset: {width: -2, height: 4},
@@ -248,7 +244,6 @@ const styles = StyleSheet.create({
   },
   arrowButton: {
     padding: 5,
-    // backgroundColor: '#d3d3d3',
     backgroundColor: primaryColor,
     borderRadius: 6,
   },
@@ -266,17 +261,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 3,
     marginBottom: 6,
-    // paddingHorizontal: 10,
   },
-  //   border:{
-  //     border
-  //   },
   today: {
     borderBottomWidth: 3,
     borderBottomColor: primaryColor,
-    // backgroundColor: 'blue', // Adjust color as needed
   },
-  // inRange:{},
   coloredBg: {
     backgroundColor: primaryColor,
   },

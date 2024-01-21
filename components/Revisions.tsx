@@ -21,6 +21,7 @@ const Revisions = ({
   todaysRevFolder,
   files,
   completedRevisionsContainer,
+  rangeManager,
 }: {
   onPdfSelect: (pdfFile: FileObject) => void;
   rangeManager: RangeManagerType;
@@ -29,6 +30,7 @@ const Revisions = ({
   completedRevisionsContainer: RevisionCompletionContainerType;
 }) => {
   const [activePdf, setActivePdf] = useState('');
+
   if (activePdf) {
     return (
       <PDFReader
@@ -58,7 +60,9 @@ const Revisions = ({
                     fontSize: 20,
                     fontWeight: 'bold',
                   }}>
-                  Completed
+                  Completed{' '}
+                  {rangeManager.lastUpdated === new Date().getDate() &&
+                    ': ' + todaysRevFolder?.name}
                 </Text>
               )}
             </View>
