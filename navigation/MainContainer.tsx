@@ -8,8 +8,7 @@ import SettingsScreen from './screens/SettingsScreen';
 import ManageRevisionsScreen from './screens/ManageRevisionsScreen';
 
 //Screen names
-const homeName = 'Dashboard';
-const settingsName = 'Profile';
+const homeName = 'Home';
 const revisionManagerName = 'Manage Revision';
 const Tab = createBottomTabNavigator();
 
@@ -30,11 +29,7 @@ const MainContainer = () => {
             let iconName;
             let routeName = route.name;
             if (routeName === homeName) {
-              iconName = focused ? 'view-dashboard' : 'view-dashboard-outline';
-            } else if (routeName === settingsName) {
-              iconName = focused
-                ? 'account-settings'
-                : 'account-settings-outline';
+              iconName = focused ? 'home' : 'home-outline';
             } else if (routeName === revisionManagerName) {
               iconName = focused ? 'clipboard-list' : 'clipboard-list-outline';
             }
@@ -52,7 +47,6 @@ const MainContainer = () => {
           name={revisionManagerName}
           component={ManageRevisionsScreen}
         />
-        <Tab.Screen name={settingsName} component={SettingsScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );

@@ -19,11 +19,7 @@ interface dateType {
   isRoundedRight?: boolean;
   isRoundedLeft?: boolean;
 }
-const Calendar = ({
-  ranges = [],
-}: {
-  ranges: Range[];
-}) => {
+const Calendar = ({ranges = []}: {ranges: Range[]}) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currYear, setCurrYear] = useState(currentDate.getFullYear());
   const [currMonth, setCurrMonth] = useState(currentDate.getMonth());
@@ -129,7 +125,7 @@ const Calendar = ({
       dates.push({day: i - lastDayofMonth + 1, inactive: true});
     }
     return dates;
-  }; 
+  };
 
   const handleUpdatingMonth = (method: 'increase' | 'decrease') => {
     if (method === 'increase') {
@@ -154,7 +150,6 @@ const Calendar = ({
             <TouchableOpacity
               onPress={() => handleUpdatingMonth('decrease')}
               style={styles.arrowButton}>
-              {/* <Text style={styles.arrowText}>←</Text> */}
               <AntDesignIcons name="caretleft" color={'white'} size={15} />
             </TouchableOpacity>
             <Text style={styles.headerText}>{`${
@@ -259,6 +254,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+
     paddingVertical: 3,
     marginBottom: 6,
   },
@@ -273,18 +269,16 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   roundLeft: {
-    borderTopLeftRadius: 50, // You can adjust the radius value as needed
-    borderBottomLeftRadius: 50, // You can adjust the radius value as needed
-    // ... other styles
+    borderTopLeftRadius: 50,
+    borderBottomLeftRadius: 50,
   },
   borderRight: {
     borderRightWidth: 1,
     borderRightColor: 'white',
   },
   roundRight: {
-    borderTopRightRadius: 50, // You can adjust the radius value as needed
-    borderBottomRightRadius: 50, // You can adjust the radius value as needed
-    // ... other styles
+    borderTopRightRadius: 50,
+    borderBottomRightRadius: 50,
   },
 
   dayText: {
