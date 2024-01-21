@@ -54,12 +54,7 @@ const Revisions = ({
     );
   }
   return (
-    <View
-      style={{
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
+    <View style={styles.mainContainer}>
       <View style={styles.revisionsContainer}>
         {completedRevisions.length > 0 && (
           <View>
@@ -80,26 +75,13 @@ const Revisions = ({
                     <TouchableOpacity
                       style={styles.pdfNameAndIconContainer}
                       onPress={() => onPdfSelect(item)}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                        }}>
+                      <View style={styles.pdfNameAndImgContainer}>
                         <Image
-                          style={{
-                            height: 45,
-                            objectFit: 'contain',
-                          }}
+                          style={styles.pdfImg}
                           source={require('./../assets/images/pdficon.png')}
                         />
 
-                        <Text
-                          style={{
-                            fontSize: 18,
-                            fontWeight: 'bold',
-                            textTransform: 'capitalize',
-                          }}>
+                        <Text style={styles.pdfName}>
                           {index + 1}. {item.name?.slice(0, -4)}
                         </Text>
                       </View>
@@ -134,26 +116,13 @@ const Revisions = ({
                     <TouchableOpacity
                       style={styles.pdfNameAndIconContainer}
                       onPress={() => onPdfSelect(item)}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                        }}>
+                      <View style={styles.pdfNameAndImgContainer}>
                         <Image
-                          style={{
-                            height: 45,
-                            objectFit: 'contain',
-                          }}
+                          style={styles.pdfImg}
                           source={require('./../assets/images/pdficon.png')}
                         />
 
-                        <Text
-                          style={{
-                            fontSize: 18,
-                            fontWeight: 'bold',
-                            textTransform: 'capitalize',
-                          }}>
+                        <Text style={styles.pdfName}>
                           {index + 1}. {item.name?.slice(0, -4)}
                         </Text>
                       </View>
@@ -176,6 +145,11 @@ const Revisions = ({
   );
 };
 const styles = StyleSheet.create({
+  mainContainer: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   revisionsContainer: {
     marginVertical: 15,
     width: '96%',
@@ -200,6 +174,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     alignItems: 'center',
+  },
+  pdfNameAndImgContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  pdfImg: {
+    height: 45,
+    objectFit: 'contain',
+  },
+  pdfName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textTransform: 'capitalize',
   },
   revision: {
     paddingRight: 16,
