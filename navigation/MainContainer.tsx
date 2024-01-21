@@ -4,8 +4,8 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Material from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import HomeScreen from './screens/HomeScreen';
-import SettingsScreen from './screens/SettingsScreen';
 import ManageRevisionsScreen from './screens/ManageRevisionsScreen';
+import {primaryColor} from '../utils/colors';
 
 //Screen names
 const homeName = 'Home';
@@ -25,22 +25,24 @@ const MainContainer = () => {
       <Tab.Navigator
         initialRouteName={homeName}
         screenOptions={({route}) => ({
-          tabBarIcon: ({focused, color, size}) => {
+          tabBarIcon: ({focused, size}) => {
             let iconName;
+            let color;
             let routeName = route.name;
             if (routeName === homeName) {
               iconName = focused ? 'home' : 'home-outline';
+              color = focused ? primaryColor : 'black';
             } else if (routeName === revisionManagerName) {
               iconName = focused ? 'clipboard-list' : 'clipboard-list-outline';
+              color = focused ? primaryColor : 'black';
             }
 
             return (
               <Material name={iconName as string} size={size} color={color} />
             );
           },
-          activeTintColor: 'green',
           labelStyle: {paddingBottom: 10, fontSize: 14},
-          inactiveTintColor: 'grey',
+          tabBarActiveTintColor:primaryColor
         })}>
         <Tab.Screen name={homeName} component={HomeScreen} />
         <Tab.Screen
