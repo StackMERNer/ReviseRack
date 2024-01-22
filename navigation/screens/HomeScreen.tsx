@@ -6,6 +6,7 @@ import RNFS from 'react-native-fs';
 import PDFReader from '../../components/PDFReader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
+import HomeScreenHeader from '../../components/HomeScreenHeader';
 interface Range {
   startDate: Date;
   endDate: Date;
@@ -44,19 +45,20 @@ const HomeScreen = () => {
   const [todaysRevFolder, setTodaysRevFolder] = useState<
     undefined | FileObject
   >(undefined);
+  const [refreshCount, setRefreshCount] = useState(0);
   const [revisionFolders, setRevisionFolders] = useState<FileObject[]>([]);
   const [rangeManager, setRangeManger] = useState<RangeManagerType>({
     lastUpdated: 0,
     nextRevisionIndex: 0,
     ranges: [],
   });
+
   useEffect(() => {
     AsyncStorage.getItem('RangeManager').then(res => {
       if (res) {
         setRangeManger(JSON.parse(res));
       }
     });
-    // AsyncStorage.clear();
   }, []);
   const revisionsPath = `${RNFS.DocumentDirectoryPath}/Revisions`;
   useEffect(() => {
@@ -69,13 +71,8 @@ const HomeScreen = () => {
           console.log(err.message, err.code);
         });
     }
-  }, [filePath]);
-  const renderHeader = () => <Calendar ranges={rangeManager.ranges} />;
-  useEffect(() => {
-    AsyncStorage.getItem('RangeManager').then(res =>
-      console.log('RangeManager', res),
-    );
-  }, []);
+  }, [filePath, refreshCount]);
+
   const showToast = () => {
     Toast.show({
       type: 'success',
@@ -90,7 +87,7 @@ const HomeScreen = () => {
       setTodaysRevFolder(todaysRevision);
       setFilePath(todaysRevision.path);
     }
-  }, [revisionFolders, nextRevisionIndex]);
+  }, [revisionFolders, nextRevisionIndex, refreshCount]);
 
   const [completedRevisionsContainer, setCompletedRevisionsContainer] =
     useState<RevisionCompletionType>({
@@ -108,7 +105,7 @@ const HomeScreen = () => {
         console.log(err.message);
         // console.log(err.message, err.code);
       });
-  }, [revisionsPath]);
+  }, [revisionsPath, refreshCount]);
 
   useEffect(() => {
     AsyncStorage.getItem('completedRevisionsContainer').then(res => {
@@ -136,7 +133,7 @@ const HomeScreen = () => {
         }
       }
     });
-  }, [revisionFolders]);
+  }, [revisionFolders, refreshCount]);
 
   const handleupdatingRevisionCompletion = (file: FileObject) => {
     if (
@@ -229,16 +226,23 @@ const HomeScreen = () => {
       />
     );
   }
+  // console.log('refreshCount', refreshCount);
   return (
     <>
       <View>
         <FlatList
-          data={['header', 'revisions']}
+          data={['header', 'calendar', 'revisions']}
           keyExtractor={item => item}
           renderItem={({item}) => {
             switch (item) {
               case 'header':
-                return renderHeader();
+                return (
+                  <HomeScreenHeader
+                    onRefresh={() => setRefreshCount(count => count + 1)}
+                  />
+                );
+              case 'calendar':
+                return <Calendar ranges={rangeManager.ranges} />;
               case 'revisions':
                 return (
                   <Revisions

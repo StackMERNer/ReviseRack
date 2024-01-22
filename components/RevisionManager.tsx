@@ -14,9 +14,11 @@ import RNFS from 'react-native-fs';
 
 import DocumentPicker from 'react-native-document-picker';
 import PDFReader from './PDFReader';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {primaryColor} from '../utils/colors';
 interface Folder {
   name: string;
-  path:string
+  path: string;
 }
 
 function RevisionManager() {
@@ -48,13 +50,24 @@ function RevisionManager() {
         console.log(err.message);
       });
   }, []);
+
+  // delete unnecessary files and folders except 'Revisions'
+  useEffect(() => {
+    RNFS.readDir(RNFS.DocumentDirectoryPath).then(res => {
+      res
+        .filter(file => file.name !== 'Revisions')
+        .forEach(file => {
+          RNFS.unlink(file.path);
+        });
+    });
+  }, []);
   const requestStoragePermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
         {
           title: 'Need Storage Permission',
-          message: 'this app needs access to your Storage ',
+          message: 'This app needs access to your Storage ',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
@@ -91,7 +104,7 @@ function RevisionManager() {
       })
       .catch(err => console.log(err));
   };
-  const selectPDF = async () => {
+  const pickPDF = async () => {
     try {
       const selectedFiles = await DocumentPicker.pick({
         type: [DocumentPicker.types.pdf],
@@ -99,7 +112,7 @@ function RevisionManager() {
       });
       if (selectedFiles.length) {
         selectedFiles.map(selectedFile => {
-          copyPDFToAppFolder(selectedFile);
+          copyPDFToAnotherFolder(selectedFile);
         });
       }
     } catch (error) {
@@ -107,7 +120,7 @@ function RevisionManager() {
     }
   };
 
-  const copyPDFToAppFolder = async (selectedFile: {
+  const copyPDFToAnotherFolder = async (selectedFile: {
     fileCopyUri: null | string;
     name: string | null;
     size: number | null;
@@ -151,7 +164,7 @@ function RevisionManager() {
             {currPath === RNFS.DocumentDirectoryPath ? null : (
               <TouchableOpacity
                 onPress={() => {
-                  setCurrPath(RNFS.DocumentDirectoryPath);
+                  setCurrPath(removeLastFileName(currPath));
                   setPdfFilePath('');
                 }}
                 style={styles.backBtn}>
@@ -169,8 +182,8 @@ function RevisionManager() {
                 right: 10,
                 bottom: 60,
               }}
-              onPress={selectPDF}>
-              <Text style={{color: 'white'}}>Add Pdf</Text>
+              onPress={pickPDF}>
+              <Text style={{color: 'white'}}>+ Add Pdf</Text>
             </TouchableOpacity>
           )}
 
@@ -192,9 +205,14 @@ function RevisionManager() {
                   style={styles.folder}>
                   <View>
                     {item.name?.includes('.') ? (
-                      <Image
-                        style={styles.folderImage}
-                        source={require('./../assets/images/fileIcon.png')}
+                      // <Image
+                      //   style={styles.folderImage}
+                      //   source={require('./../assets/images/fileIcon.png')}
+                      // />
+                      <AntDesign
+                        color={primaryColor}
+                        name="pdffile1"
+                        size={40}
                       />
                     ) : (
                       <Image
@@ -216,8 +234,8 @@ function RevisionManager() {
           {!isInsideRevisions && (
             <TouchableOpacity
               onPress={() => setModalVisible(true)}
-              style={styles.addButton}>
-              <Text style={styles.plusTest}>+</Text>
+              style={styles.addFolderBtn}>
+              <Text style={styles.addFolderBtnText}> + Add Folder</Text>
             </TouchableOpacity>
           )}
           <Modal
@@ -275,20 +293,22 @@ const styles = StyleSheet.create({
     // paddingVertical: 40,
   },
 
-  addButton: {
-    height: 50,
-    width: 50,
+  addFolderBtn: {
+    // height: 50,
+    // width: 50,
     position: 'absolute',
     bottom: 100,
     right: 20,
     backgroundColor: 'black',
-    borderRadius: 50,
+    borderRadius: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  plusTest: {
+  addFolderBtnText: {
     color: '#fff',
-    fontSize: 30,
+    fontSize: 15,
   },
   backBntText: {
     fontSize: 30,

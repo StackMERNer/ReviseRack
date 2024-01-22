@@ -14,7 +14,7 @@ import {
   RevisionCompletionContainerType,
 } from '../navigation/screens/HomeScreen';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {greenPrimary, primaryColor} from '../utils/colors';
+import {greenPrimary, primaryColor, secondaryColor} from '../utils/colors';
 
 const Revisions = ({
   onPdfSelect,
@@ -55,92 +55,97 @@ const Revisions = ({
   }
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.revisionsContainer}>
-        {completedRevisions.length > 0 && (
-          <View>
+      {files.length > 0 ? (
+        <View style={styles.revisionsContainer}>
+          {completedRevisions.length > 0 && (
             <View>
-              {files.length > 0 && (
-                <Text style={styles.heading}>
-                  Completed{' '}
-                  {rangeManager.lastUpdated === new Date().getDate() &&
-                    ': ' + todaysRevFolder?.name}
-                </Text>
-              )}
-            </View>
-            <FlatList
-              data={completedRevisions}
-              renderItem={({item, index}) => {
-                return (
-                  <View style={[styles.revision, styles.completedRevision]}>
-                    <TouchableOpacity
-                      style={styles.pdfNameAndIconContainer}
-                      onPress={() => onPdfSelect(item)}>
-                      <View style={styles.pdfNameAndImgContainer}>
-                        <Image
-                          style={styles.pdfImg}
-                          source={require('./../assets/images/pdficon.png')}
-                        />
+              <Text style={styles.heading}>
+                Completed{' '}
+                {rangeManager.lastUpdated === new Date().getDate() &&
+                  ': ' + todaysRevFolder?.name}
+              </Text>
+              <FlatList
+                data={completedRevisions}
+                renderItem={({item, index}) => {
+                  return (
+                    <View style={[styles.revision, styles.completedRevision]}>
+                      <TouchableOpacity
+                        style={styles.pdfNameAndIconContainer}
+                        onPress={() => onPdfSelect(item)}>
+                        <View style={styles.pdfNameAndImgContainer}>
+                          <Image
+                            style={styles.pdfImg}
+                            source={require('./../assets/images/pdficon.png')}
+                          />
 
-                        <Text style={styles.pdfName}>
-                          {index + 1}. {item.name?.slice(0, -4)}
-                        </Text>
-                      </View>
-                      <View>
-                        <AntDesign
-                          name="checkcircle"
-                          style={{color: greenPrimary}}
-                          size={25}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                );
-              }}
-            />
-          </View>
-        )}
-        {files.length > 0 && pendingRevisions.length > 0 && (
-          <View>
+                          <Text style={styles.pdfName}>
+                            {index + 1}. {item.name?.slice(0, -4)}
+                          </Text>
+                        </View>
+                        <View>
+                          <AntDesign
+                            name="checkcircle"
+                            style={{color: greenPrimary}}
+                            size={25}
+                          />
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  );
+                }}
+              />
+            </View>
+          )}
+          {pendingRevisions.length > 0 && (
             <View>
-              {files.length > 0 && (
-                <Text style={styles.heading}>
-                  To Read : {todaysRevFolder?.name}
-                </Text>
-              )}
-            </View>
-            <FlatList
-              data={pendingRevisions}
-              renderItem={({item, index}) => {
-                return (
-                  <View style={[styles.revision, styles.pendingRevision]}>
-                    <TouchableOpacity
-                      style={styles.pdfNameAndIconContainer}
-                      onPress={() => onPdfSelect(item)}>
-                      <View style={styles.pdfNameAndImgContainer}>
-                        <Image
-                          style={styles.pdfImg}
-                          source={require('./../assets/images/pdficon.png')}
-                        />
+              <Text style={styles.heading}>
+                To Read : {todaysRevFolder?.name}
+              </Text>
 
-                        <Text style={styles.pdfName}>
-                          {index + 1}. {item.name?.slice(0, -4)}
-                        </Text>
-                      </View>
-                      <View>
-                        <AntDesign
-                          name="rightcircle"
-                          style={{color: primaryColor}}
-                          size={25}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                );
-              }}
-            />
-          </View>
-        )}
-      </View>
+              <FlatList
+                data={pendingRevisions}
+                renderItem={({item, index}) => {
+                  return (
+                    <View style={[styles.revision, styles.pendingRevision]}>
+                      <TouchableOpacity
+                        style={styles.pdfNameAndIconContainer}
+                        onPress={() => onPdfSelect(item)}>
+                        <View style={styles.pdfNameAndImgContainer}>
+                          <Image
+                            style={styles.pdfImg}
+                            source={require('./../assets/images/pdficon.png')}
+                          />
+
+                          <Text style={styles.pdfName}>
+                            {index + 1}. {item.name?.slice(0, -4)}
+                          </Text>
+                        </View>
+                        <View>
+                          <AntDesign
+                            name="rightcircle"
+                            style={{color: primaryColor}}
+                            size={25}
+                          />
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  );
+                }}
+              />
+            </View>
+          )}
+        </View>
+      ) : (
+        <View style={styles.infoContainer}>
+          <Image source={require('./../assets/images/empty-box-96.png')} />
+          <Text style={styles.infoHeader}>You have no PDFs stored yet!</Text>
+          <Text style={styles.infoText}>
+            Go to 'Manage Revisions,' enter the 'Revisions' folder, create some
+            folders (e.g., revision 1, revision 2), and add PDFs to these
+            folders.
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -169,6 +174,22 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
   },
+  infoContainer: {
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    backgroundColor: primaryColor,
+    marginTop: 30,
+    gap: 10,
+    borderRadius: 20,
+    alignItems: 'center',
+  },
+  infoHeader: {
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  infoText: {textAlign: 'center', color: 'white'},
   pdfNameAndIconContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

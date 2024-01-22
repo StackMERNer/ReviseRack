@@ -36,7 +36,6 @@ const MainContainer = () => {
               iconName = focused ? 'clipboard-list' : 'clipboard-list-outline';
               color = focused ? primaryColor : 'black';
             }
-
             return (
               <Material name={iconName as string} size={size} color={color} />
             );
@@ -44,7 +43,11 @@ const MainContainer = () => {
           labelStyle: {paddingBottom: 10, fontSize: 20},
           tabBarActiveTintColor: primaryColor,
         })}>
-        <Tab.Screen name={homeName} component={HomeScreen} />
+        <Tab.Screen
+          name={homeName}
+          component={HomeScreen}
+          options={{headerShown: false}}
+        />
         <Tab.Screen
           name={revisionsManagerName}
           component={ManageRevisionsScreen}
