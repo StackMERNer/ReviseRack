@@ -47,7 +47,7 @@ const HomeScreen = () => {
   >(undefined);
   const [refreshCount, setRefreshCount] = useState(0);
   const [revisionFolders, setRevisionFolders] = useState<FileObject[]>([]);
-  const [rangeManager, setRangeManger] = useState<RangeManagerType>({
+  const [rangeManager, setRangeManager] = useState<RangeManagerType>({
     lastUpdated: 0,
     nextRevisionIndex: 0,
     ranges: [],
@@ -56,10 +56,11 @@ const HomeScreen = () => {
   useEffect(() => {
     AsyncStorage.getItem('RangeManager').then(res => {
       if (res) {
-        setRangeManger(JSON.parse(res));
+        setRangeManager(JSON.parse(res));
       }
     });
   }, []);
+  // console.log('rangeManager', rangeManager);
   const revisionsPath = `${RNFS.DocumentDirectoryPath}/Revisions`;
   useEffect(() => {
     if (filePath) {
@@ -187,17 +188,28 @@ const HomeScreen = () => {
         startDate: new Date(),
         endDate: new Date(),
       };
-      let updatedLastRange = {...lastRange, endDate: new Date()};
-      let withoutLastRange = ranges.slice(0, ranges.length - 2);
+      let updatedRangeManager: RangeManagerType;
       let updatedNextRevisionIndex =
         nextRevisionIndex < revisionFolders.length - 1
           ? nextRevisionIndex + 1
           : 0;
-      const updatedRangeManager: RangeManagerType = {
-        nextRevisionIndex: updatedNextRevisionIndex,
-        lastUpdated: currDate,
-        ranges: [...withoutLastRange, updatedLastRange].slice(-5),
-      };
+      if (new Date(lastRange.endDate).getDate() - new Date().getDate() === 1) {
+        let updatedLastRange = {...lastRange, endDate: new Date()};
+        let withoutLastRange = ranges.slice(0, ranges.length - 1);
+
+        updatedRangeManager = {
+          nextRevisionIndex: updatedNextRevisionIndex,
+          lastUpdated: currDate,
+          ranges: [...withoutLastRange, updatedLastRange].slice(-5),
+        };
+      } else {
+        const newRange: Range = {startDate: new Date(), endDate: new Date()};
+        updatedRangeManager = {
+          nextRevisionIndex: updatedNextRevisionIndex,
+          lastUpdated: currDate,
+          ranges: [...ranges, newRange].slice(-5),
+        };
+      }
       AsyncStorage.setItem(
         'RangeManager',
         JSON.stringify(updatedRangeManager),
@@ -205,14 +217,14 @@ const HomeScreen = () => {
         AsyncStorage.getItem('RangeManager').then(res => {
           if (res) {
             let rangeManager: RangeManagerType = JSON.parse(res);
-            // onRangeManagerUpdate(rangeManager);
-            setRangeManger(rangeManager);
+            setRangeManager(rangeManager);
             showToast();
           }
         });
       });
     });
   };
+  // AsyncStorage.clear();
   if (selectedPdf?.name) {
     return (
       <PDFReader
