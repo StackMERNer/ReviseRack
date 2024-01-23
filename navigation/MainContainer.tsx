@@ -40,7 +40,8 @@ const MainContainer = () => {
               <Material name={iconName as string} size={size} color={color} />
             );
           },
-          labelStyle: {paddingBottom: 10, fontSize: 20},
+          // labelStyle: {paddingBottom: 10, fontSize: 20},
+          tabBarLabelStyle: {fontSize: 14},
           tabBarActiveTintColor: primaryColor,
         })}>
         <Tab.Screen
