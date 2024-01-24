@@ -167,7 +167,7 @@ function RevisionManager() {
     }
   }
   // console.log('folders', folders);
-  console.log(isInsideRevisions);
+  // console.log(isInsideRevisions);
 
   return (
     <View style={styles.container}>

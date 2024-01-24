@@ -193,10 +193,9 @@ const HomeScreen = () => {
         nextRevisionIndex < revisionFolders.length - 1
           ? nextRevisionIndex + 1
           : 0;
-      if (new Date(lastRange.endDate).getDate() - new Date().getDate() === 1) {
+      if (new Date(lastRange.endDate).getDate() - new Date().getDate() !== 1) {
         let updatedLastRange = {...lastRange, endDate: new Date()};
         let withoutLastRange = ranges.slice(0, ranges.length - 1);
-
         updatedRangeManager = {
           nextRevisionIndex: updatedNextRevisionIndex,
           lastUpdated: currDate,
