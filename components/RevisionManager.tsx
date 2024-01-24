@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   FlatList,
   Image,
   Modal,
@@ -16,17 +17,27 @@ import DocumentPicker from 'react-native-document-picker';
 import PDFReader from './PDFReader';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {primaryColor} from '../utils/colors';
-interface Folder {
+import MIcon from 'react-native-vector-icons/MaterialIcons';
+
+interface FileObject {
+  ctime: Date | null;
+  isDirectory: () => boolean;
+  isFile: () => boolean;
+  mtime: Date | null;
   name: string;
   path: string;
+  size: number;
 }
 
 function RevisionManager() {
   const [modalVisible, setModalVisible] = useState(false);
   const [currPath, setCurrPath] = useState(RNFS.DocumentDirectoryPath);
-  const [folders, setFolders] = useState<Folder[]>([]);
+  const [folders, setFolders] = useState<FileObject[]>([]);
   const [folderName, setFolderName] = useState('');
-
+  const [itemToModify, setItemToModify] = useState<FileObject | undefined>(
+    undefined,
+  );
+  const [newFolderName, setNewFolderName] = useState('');
   const getAllFolders = () => {
     RNFS.readDir(currPath)
       .then(result => {
@@ -155,6 +166,8 @@ function RevisionManager() {
       return filePath;
     }
   }
+  // console.log('folders', folders);
+  console.log(isInsideRevisions);
 
   return (
     <View style={styles.container}>
@@ -201,14 +214,11 @@ function RevisionManager() {
                       setPdfFilePath(currPath + '/' + item.name);
                     }
                   }}
-                  onLongPress={() => hanldeDelete(item.path)}
+                  // onLongPress={() => hanldeDelete(item.path)}
+                  onLongPress={() => setItemToModify(item)}
                   style={styles.folder}>
                   <View>
                     {item.name?.includes('.') ? (
-                      // <Image
-                      //   style={styles.folderImage}
-                      //   source={require('./../assets/images/fileIcon.png')}
-                      // />
                       <AntDesign
                         color={primaryColor}
                         name="pdffile1"
@@ -270,6 +280,109 @@ function RevisionManager() {
               </View>
             </View>
           </Modal>
+
+          <Modal
+            onRequestClose={() => setModalVisible(false)}
+            transparent={true}
+            visible={itemToModify?.name ? true : false}>
+            <View style={styles.modal}>
+              <View style={styles.modalView}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    paddingHorizontal: 20,
+                    paddingBottom: 10,
+                    alignItems: 'center',
+                  }}>
+                  <Text>{itemToModify?.name}</Text>
+                  <TouchableOpacity onPress={() => setItemToModify(undefined)}>
+                    <MIcon name="cancel" size={30} />
+                  </TouchableOpacity>
+                </View>
+
+                <TextInput
+                  onChangeText={text => setNewFolderName(text)}
+                  placeholder="Enter New Name"
+                  style={styles.textInput}
+                />
+
+                <TouchableOpacity
+                  onPress={() => {
+                    if (newFolderName.trim() !== '') {
+                      let newPath;
+                      if (itemToModify?.isDirectory()) {
+                        newPath = (itemToModify as FileObject)?.path.replace(
+                          itemToModify?.name || '',
+                          newFolderName,
+                        );
+                        console.log('object', newPath);
+                      } else if (itemToModify?.isFile) {
+                        newPath =
+                          (itemToModify as FileObject)?.path.replace(
+                            itemToModify?.name || '',
+                            newFolderName,
+                          ) + '.pdf';
+                        console.log('obafadfadfject', newPath);
+                      }
+
+                      if (newPath) {
+                        RNFS.moveFile(
+                          (itemToModify as FileObject)?.path,
+                          newPath,
+                        )
+                          .then(() => {
+                            setItemToModify(undefined);
+                            setNewFolderName('');
+                            getAllFolders();
+                            setModalVisible(false);
+                          })
+                          .catch(error => {
+                            console.log('Error renaming folder:', error);
+                            setModalVisible(false);
+                          });
+                      }
+                    } else {
+                      Alert.alert('Error', 'Please enter a valid folder name.');
+                    }
+                  }}
+                  style={styles.createFolderButton}>
+                  <Text style={styles.createFolderButtonText}>
+                    Rename This Folder
+                  </Text>
+                </TouchableOpacity>
+
+                <Text style={{paddingTop: 20}}>Or</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    Alert.alert(
+                      'Confirmation',
+                      'Are you sure you want to proceed?',
+                      [
+                        {
+                          text: 'Cancel',
+                          style: 'cancel',
+                        },
+                        {
+                          text: 'Yes',
+                          onPress: () => {
+                            hanldeDelete((itemToModify as FileObject).path);
+                            setItemToModify(undefined);
+                          },
+                        },
+                      ],
+                      {cancelable: false},
+                    );
+                  }}
+                  style={styles.deleteFolderButton}>
+                  <Text style={styles.createFolderButtonText}>
+                    Delete This Folder
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
       ) : (
         <PDFReader
@@ -294,14 +407,12 @@ const styles = StyleSheet.create({
   },
 
   addFolderBtn: {
-    // height: 50,
-    // width: 50,
     position: 'absolute',
     bottom: 100,
     right: 20,
     backgroundColor: 'black',
-    borderRadius: 10,
-    paddingVertical: 5,
+    borderRadius: 20,
+    paddingVertical: 15,
     paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -345,6 +456,16 @@ const styles = StyleSheet.create({
   },
   createFolderButton: {
     backgroundColor: 'black',
+    // height: ,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 10,
+    width: '90%',
+    marginTop: 30,
+    alignContent: 'center',
+  },
+  deleteFolderButton: {
+    backgroundColor: 'red',
     // height: ,
     paddingHorizontal: 10,
     paddingVertical: 10,
