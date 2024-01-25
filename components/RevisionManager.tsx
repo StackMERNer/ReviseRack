@@ -31,7 +31,10 @@ interface FileObject {
 
 function RevisionManager() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [currPath, setCurrPath] = useState(RNFS.DocumentDirectoryPath);
+  const [currPath, setCurrPath] = useState(
+    RNFS.DocumentDirectoryPath + '/Revisions',
+  );
+
   const [folders, setFolders] = useState<FileObject[]>([]);
   const [folderName, setFolderName] = useState('');
   const [itemToModify, setItemToModify] = useState<FileObject | undefined>(
@@ -41,6 +44,7 @@ function RevisionManager() {
   const getAllFolders = () => {
     RNFS.readDir(currPath)
       .then(result => {
+        console.log('result', result);
         setFolders(result);
       })
       .catch(err => {
@@ -166,15 +170,12 @@ function RevisionManager() {
       return filePath;
     }
   }
-  // console.log('folders', folders);
-  // console.log(isInsideRevisions);
-
   return (
     <View style={styles.container}>
       {!pdfFilePath ? (
         <View style={{width: '100%', height: '100%'}}>
           <View style={styles.backBtnContainer}>
-            {currPath === RNFS.DocumentDirectoryPath ? null : (
+            {currPath === RNFS.DocumentDirectoryPath + '/Revisions' ? null : (
               <TouchableOpacity
                 onPress={() => {
                   setCurrPath(removeLastFileName(currPath));
@@ -214,7 +215,6 @@ function RevisionManager() {
                       setPdfFilePath(currPath + '/' + item.name);
                     }
                   }}
-                  // onLongPress={() => hanldeDelete(item.path)}
                   onLongPress={() => setItemToModify(item)}
                   style={styles.folder}>
                   <View>
