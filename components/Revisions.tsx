@@ -53,7 +53,6 @@ const Revisions = ({
       />
     );
   }
-  console.log(completedRevisionsContainer);
   return (
     <View style={styles.mainContainer}>
       {files.length > 0 ? (
@@ -141,7 +140,7 @@ const Revisions = ({
           <Image source={require('./../assets/images/empty-box-96.png')} />
           <Text style={styles.infoHeader}>You have no PDFs stored yet!</Text>
           <Text style={styles.infoText}>
-            Go to 'Manage Revisions,' enter the 'Revisions' folder, create some
+            Go to 'Manage Revisions,' create some
             folders (e.g., revision 1, revision 2), and add PDFs to these
             folders.
           </Text>
@@ -159,7 +158,6 @@ const styles = StyleSheet.create({
   revisionsContainer: {
     marginVertical: 15,
     width: '96%',
-    // height: 240,
     backgroundColor: 'white',
     paddingBottom: 20,
     paddingHorizontal: 5,

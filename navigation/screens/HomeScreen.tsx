@@ -89,7 +89,6 @@ const HomeScreen = () => {
       setFilePath(todaysRevision.path);
     }
   }, [revisionFolders, nextRevisionIndex, refreshCount]);
-
   const [completedRevisionsContainer, setCompletedRevisionsContainer] =
     useState<RevisionCompletionType>({
       date: currDate,
@@ -148,6 +147,8 @@ const HomeScreen = () => {
           file.name,
         ],
       };
+
+      // update ranges if all revisions completed
       AsyncStorage.setItem(
         'completedRevisionsContainer',
         JSON.stringify(updated),
@@ -193,7 +194,7 @@ const HomeScreen = () => {
         nextRevisionIndex < revisionFolders.length - 1
           ? nextRevisionIndex + 1
           : 0;
-      if (new Date(lastRange.endDate).getDate() - new Date().getDate() !== 1) {
+      if (new Date().getDate() - new Date(lastRange.endDate).getDate() === 1) {
         let updatedLastRange = {...lastRange, endDate: new Date()};
         let withoutLastRange = ranges.slice(0, ranges.length - 1);
         updatedRangeManager = {
@@ -223,7 +224,6 @@ const HomeScreen = () => {
       });
     });
   };
-  // AsyncStorage.clear();
   if (selectedPdf?.name) {
     return (
       <PDFReader

@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, {useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -18,7 +18,7 @@ const PDFReader = ({
   pdfFilePath: string;
   onPressBackBtn: (currentPath: string) => void;
 }) => {
-  //one url type: /data/user/0/com.myreader/files/Revisions/Revision 1/test.pdf
+  //example pdfFilePath : /data/user/0/com.myreader/files/Revisions/Revision 1/test.pdf
   const [totalPages, setTotalPages] = useState(0);
   const [activePage, setActivePage] = useState(1);
   const [displayAblePageNo, setDisplayAblePageNo] = useState(0);
@@ -60,7 +60,6 @@ const PDFReader = ({
           minScale={0.5}
           maxScale={3.0}
           onPressLink={link => Linking.openURL(link)}
-
           renderActivityIndicator={() => (
             <ActivityIndicator color="black" size="large" />
           )}
