@@ -87,13 +87,13 @@ function RevisionManager() {
           buttonPositive: 'OK',
         },
       );
-      // console.log(granted);
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        // console.log('You can use the Storage');
         getAllFiles();
       } else {
-        // console.log(granted);
-        console.log('Storage permission denied');
+        Alert.alert(
+          'Storage permission denied',
+          'Your device is denying permission to access storage for managing files. Clear the app data and try again.',
+        );
       }
     } catch (err) {
       console.warn(err);
@@ -196,12 +196,14 @@ function RevisionManager() {
               />
             )}
             {/* display info message suggesting user to add some pdfs if user inside 'Revisions/AnyFolder' folder and it's empty */}
-            {!isInsideRevisionsFolder && currPath.includes('/Revisions/') && !(files.length > 0) && (
-              <EmptyBoxWithInfo
-                title="No PDFs Found"
-                description="Add Some PDFs Here"
-              />
-            )}
+            {!isInsideRevisionsFolder &&
+              currPath.includes('/Revisions/') &&
+              !(files.length > 0) && (
+                <EmptyBoxWithInfo
+                  title="No PDFs Found"
+                  description="Add Some PDFs Here"
+                />
+              )}
           </View>
           {!isInsideRevisionsFolder && (
             <TouchableOpacity

@@ -21,7 +21,8 @@ const PDFReader = ({
   //example pdfFilePath : /data/user/0/com.myreader/files/Revisions/Revision 1/test.pdf
   const [totalPages, setTotalPages] = useState(0);
   const [activePage, setActivePage] = useState(1);
-  const [displayAblePageNo, setDisplayAblePageNo] = useState(0);
+  const [displayAblePageNum, setDisplayAblePageNum] = useState(0);
+  const [displayTools, setDisplayTools] = useState(false);
 
   const setRandomPage = () => {
     const randomPage = Math.round(Math.random() * totalPages);
@@ -29,16 +30,18 @@ const PDFReader = ({
   };
   return (
     <View style={{flex: 1}}>
-      <View style={styles.pdfNavBar}>
-        <TouchableOpacity onPress={() => onPressBackBtn(pdfFilePath)}>
-          <Text style={styles.backBtn}>←</Text>
-        </TouchableOpacity>
-        <View style={styles.navBarInfo}>
-          <Text style={{color: '#fff'}}>
-            {displayAblePageNo}/{totalPages}
-          </Text>
+      {!displayTools && (
+        <View style={styles.pdfNavBar}>
+          <TouchableOpacity onPress={() => onPressBackBtn(pdfFilePath)}>
+            <Text style={styles.backBtn}>←</Text>
+          </TouchableOpacity>
+          <View style={styles.navBarInfo}>
+            <Text style={{color: '#fff'}}>
+              {displayAblePageNum}/{totalPages}
+            </Text>
+          </View>
         </View>
-      </View>
+      )}
       <ScrollView contentContainerStyle={{flex: 1}}>
         <Pdf
           source={{
@@ -47,7 +50,7 @@ const PDFReader = ({
           }}
           page={activePage}
           onPageChanged={page => {
-            setDisplayAblePageNo(page);
+            setDisplayAblePageNum(page);
           }}
           style={styles.pdf}
           onError={error => {
@@ -56,6 +59,7 @@ const PDFReader = ({
           onLoadComplete={pages => {
             setTotalPages(pages);
           }}
+          onPageSingleTap={() => setDisplayTools(!displayTools)}
           scale={1.0}
           minScale={0.5}
           maxScale={3.0}
@@ -66,11 +70,13 @@ const PDFReader = ({
         />
       </ScrollView>
 
-      <View>
-        <TouchableOpacity onPress={setRandomPage} style={styles.shuffleBtn}>
-          <Text style={styles.shuffleBtnTxt}>Shuffle</Text>
-        </TouchableOpacity>
-      </View>
+      {!displayTools && (
+        <View>
+          <TouchableOpacity onPress={setRandomPage} style={styles.shuffleBtn}>
+            <Text style={styles.shuffleBtnTxt}>Shuffle</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
@@ -80,6 +86,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
     backgroundColor: 'black',
+    position: 'absolute',
+    zIndex: 1,
   },
   backBtn: {
     fontSize: 30,
