@@ -9,9 +9,9 @@ import {
 } from 'react-native';
 import PDFReader from './PDFReader';
 import {
+  CompletedRevsionsContainerObjType,
   FileObject,
   RangeManagerType,
-  RevisionCompletionContainerType,
 } from '../navigation/screens/HomeScreen';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -29,7 +29,7 @@ const Revisions = ({
   rangeManager: RangeManagerType;
   todaysRevFolder: FileObject | undefined;
   files: FileObject[];
-  completedRevisionsContainer: RevisionCompletionContainerType;
+  completedRevisionsContainer: CompletedRevsionsContainerObjType;
 }) => {
   const [selectedPdfPath, setSelectedPdfPath] = useState('');
   const [pendingRevisions, setPendingRevisions] = useState<FileObject[]>([]);
@@ -55,6 +55,7 @@ const Revisions = ({
       />
     );
   }
+  // console.log('todaysRevFolder', todaysRevFolder);
   return (
     <View style={styles.mainContainer}>
       {files.length > 0 ? (
@@ -63,8 +64,8 @@ const Revisions = ({
             <View>
               <Text style={styles.heading}>
                 Completed{' '}
-                {rangeManager.lastUpdated === new Date().getDate() &&
-                  ': ' + todaysRevFolder?.name}
+                {new Date(rangeManager.lastUpdated).getDate() ===
+                  new Date().getDate() && ': ' + todaysRevFolder?.name}
               </Text>
 
               <FlatList
@@ -143,11 +144,20 @@ const Revisions = ({
           )}
         </View>
       ) : (
-        <EmptyBoxWithInfo
-          title="You have no PDFs stored yet!"
-          description="Go to 'Manage Revisions,' create some folders (e.g., revision 1,
+        <View style={{width: '100%', paddingHorizontal: 5}}>
+          {todaysRevFolder?.name ? (
+            <EmptyBoxWithInfo
+              title={`Missing PDFs in "${todaysRevFolder.name}" folder`}
+              description={`You have no PDFs stored yet in "${todaysRevFolder.name}" Folder`}
+            />
+          ) : (
+            <EmptyBoxWithInfo
+              title="You have no PDFs stored yet!"
+              description="Go to 'Manage Revisions,' create some folders (e.g., revision 1,
           revision 2), and add PDFs to these folders."
-        />
+            />
+          )}
+        </View>
       )}
     </View>
   );

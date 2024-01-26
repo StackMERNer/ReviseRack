@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, FlatList, StyleSheet} from 'react-native';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
-import {primaryColor, secondaryColor} from '../utils/colors';
+import {primaryColor} from '../utils/colors';
 interface Range {
   startDate: Date;
   endDate: Date;
@@ -20,7 +20,7 @@ interface dateType {
   isRoundedLeft?: boolean;
 }
 const Calendar = ({ranges = []}: {ranges: Range[]}) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const currentDate = new Date();
   const [currYear, setCurrYear] = useState(currentDate.getFullYear());
   const [currMonth, setCurrMonth] = useState(currentDate.getMonth());
   const months = [

@@ -23,21 +23,17 @@ export interface FileObject {
 }
 export type RangeManagerType = {
   ranges: Range[];
-  lastUpdated: number;
+  lastUpdated: Date;
   nextRevisionIndex: number;
 };
-type RevisionCompletionType = {
-  date: number;
+export type CompletedRevsionsContainerObjType = {
+  currentDate: Date;
   completedNames: string[];
   RevFolderName: string;
 };
-export type RevisionCompletionContainerType = {
-  date: number;
-  completedNames: string[];
-  RevFolderName: string;
-};
+
 const HomeScreen = () => {
-  const currDate = new Date().getDate();
+  const currDate = new Date();
   const [nextRevisionIndex, setNextRevisionIndex] = useState(0);
   const [selectedPdf, setSelectedPdf] = useState<FileObject | undefined>();
 
@@ -49,7 +45,7 @@ const HomeScreen = () => {
   const [refreshCount, setRefreshCount] = useState(0);
   const [revisionFolders, setRevisionFolders] = useState<FileObject[]>([]);
   const [rangeManager, setRangeManager] = useState<RangeManagerType>({
-    lastUpdated: 0,
+    lastUpdated: new Date(),
     nextRevisionIndex: 0,
     ranges: [],
   });
@@ -90,8 +86,8 @@ const HomeScreen = () => {
     }
   }, [revisionFolders, nextRevisionIndex, refreshCount]);
   const [completedRevisionsContainer, setCompletedRevisionsContainer] =
-    useState<RevisionCompletionType>({
-      date: currDate,
+    useState<CompletedRevsionsContainerObjType>({
+      currentDate: currDate,
       completedNames: [],
       RevFolderName: '',
     });
@@ -109,8 +105,11 @@ const HomeScreen = () => {
   useEffect(() => {
     AsyncStorage.getItem('completedRevisionsContainer').then(res => {
       if (res) {
-        const revisionCompletionObj: RevisionCompletionType = JSON.parse(res);
-        if (revisionCompletionObj.date === currDate) {
+        const revisionCompletionObj: CompletedRevsionsContainerObjType = JSON.parse(res);
+        if (
+          new Date(revisionCompletionObj.currentDate).getDate() ===
+          currDate.getDate()
+        ) {
           setCompletedRevisionsContainer(revisionCompletionObj);
         }
       }
@@ -119,7 +118,9 @@ const HomeScreen = () => {
       if (res) {
         const rangeManager: RangeManagerType = JSON.parse(res);
         const nextRevisionIndex = rangeManager.nextRevisionIndex ?? 0;
-        if (rangeManager.lastUpdated !== currDate) {
+        if (
+          new Date(rangeManager.lastUpdated).getDate() !== currDate.getDate()
+        ) {
           setNextRevisionIndex(nextRevisionIndex);
         } else {
           setNextRevisionIndex(
@@ -155,16 +156,24 @@ const HomeScreen = () => {
         .then(() => {
           AsyncStorage.getItem('completedRevisionsContainer').then(res => {
             if (res) {
-              const revisionCompletionObj: RevisionCompletionType =
+              const revisionCompletionObj: CompletedRevsionsContainerObjType =
                 JSON.parse(res);
+              // update ranges if, revisionCompletionObj contain today and all revisions completed and ranges not include today.
               if (
-                revisionCompletionObj.date === currDate &&
+                new Date(revisionCompletionObj.currentDate).getDate() ===
+                  currDate.getDate() &&
                 revisionCompletionObj.completedNames.length === files.length &&
-                rangeManager.lastUpdated !== currDate
+                (new Date(rangeManager.lastUpdated).getMonth() !==
+                  new Date().getMonth() ||
+                  new Date(rangeManager.lastUpdated).getDate() !==
+                    currDate.getDate())
               ) {
                 updateRangeManager();
               }
-              if (revisionCompletionObj.date === currDate) {
+              if (
+                new Date(revisionCompletionObj.currentDate).getDate() ===
+                currDate.getDate()
+              ) {
                 setCompletedRevisionsContainer(revisionCompletionObj);
               }
             }
@@ -197,14 +206,14 @@ const HomeScreen = () => {
         let withoutLastRange = ranges.slice(0, ranges.length - 1);
         updatedRangeManager = {
           nextRevisionIndex: updatedNextRevisionIndex,
-          lastUpdated: currDate,
+          lastUpdated: new Date(),
           ranges: [...withoutLastRange, updatedLastRange].slice(-5),
         };
       } else {
         const newRange: Range = {startDate: new Date(), endDate: new Date()};
         updatedRangeManager = {
           nextRevisionIndex: updatedNextRevisionIndex,
-          lastUpdated: currDate,
+          lastUpdated: new Date(),
           ranges: [...ranges, newRange].slice(-5),
         };
       }

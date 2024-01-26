@@ -481,27 +481,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
     alignContent: 'center',
   },
-  files: {
-    flexDirection: 'row',
-  },
-  filesContainer: {
-    marginTop: 20,
-    paddingHorizontal: 10,
-    width: '100%',
-  },
-  file: {
-    borderRadius: 10,
-    gap: 4,
-    margin: 5,
-    flexGrow: 1,
-    borderWidth: 0.2,
-    padding: 14,
-  },
-  fileName: {
-    fontSize: 16,
-    textTransform: 'capitalize',
-    color: '#23395F',
-  },
   backBtnContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -515,17 +494,7 @@ const styles = StyleSheet.create({
   backBtnText: {
     fontSize: 30,
     fontWeight: 'bold',
-  },
-  pathContainer: {
-    flex: 10,
-    backgroundColor: 'lightgrey',
-    padding: 10,
-    borderRadius: 5,
-  },
-  pathText: {
-    fontSize: 16,
-    color: 'black',
-  },
+  }
 });
 
 export default ManageRevisionsScreen;

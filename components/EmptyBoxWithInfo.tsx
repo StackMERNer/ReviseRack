@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     gap: 10,
     borderRadius: 20,
     alignItems: 'center',
+    width: '100%',
   },
   infoHeader: {
     textAlign: 'center',
