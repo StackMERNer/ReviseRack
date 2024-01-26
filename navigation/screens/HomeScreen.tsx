@@ -60,7 +60,6 @@ const HomeScreen = () => {
       }
     });
   }, []);
-  // console.log('rangeManager', rangeManager);
   const revisionsPath = `${RNFS.DocumentDirectoryPath}/Revisions`;
   useEffect(() => {
     if (filePath) {

@@ -15,6 +15,7 @@ import {
 } from '../navigation/screens/HomeScreen';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {greenPrimary, primaryColor} from '../utils/colors';
+import EmptyBoxWithInfo from './EmptyBoxWithInfo';
 
 const Revisions = ({
   onPdfSelect,
@@ -136,15 +137,11 @@ const Revisions = ({
           )}
         </View>
       ) : (
-        <View style={styles.infoContainer}>
-          <Image source={require('./../assets/images/empty-box-96.png')} />
-          <Text style={styles.infoHeader}>You have no PDFs stored yet!</Text>
-          <Text style={styles.infoText}>
-            Go to 'Manage Revisions,' create some
-            folders (e.g., revision 1, revision 2), and add PDFs to these
-            folders.
-          </Text>
-        </View>
+        <EmptyBoxWithInfo
+          title="You have no PDFs stored yet!"
+          description="Go to 'Manage Revisions,' create some folders (e.g., revision 1,
+          revision 2), and add PDFs to these folders."
+        />
       )}
     </View>
   );
@@ -173,22 +170,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
   },
-  infoContainer: {
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    backgroundColor: primaryColor,
-    marginTop: 30,
-    gap: 10,
-    borderRadius: 20,
-    alignItems: 'center',
-  },
-  infoHeader: {
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  infoText: {textAlign: 'center', color: 'white'},
   pdfNameAndIconContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -224,7 +205,7 @@ const styles = StyleSheet.create({
   },
   completedRevision: {
     backgroundColor: '#BFFEDF',
-  }
+  },
 });
 
 export default Revisions;

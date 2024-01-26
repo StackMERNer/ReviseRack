@@ -18,6 +18,7 @@ import PDFReader from './PDFReader';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {primaryColor} from '../utils/colors';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
+import EmptyBoxWithInfo from './EmptyBoxWithInfo';
 
 interface FileObject {
   ctime: Date | null;
@@ -154,7 +155,8 @@ function RevisionManager() {
   const [pdfFilePath, setPdfFilePath] = useState('');
 
   const folderNames = currPath.split('/');
-  const isInsideRevisions = folderNames[folderNames.length - 2] === 'Revisions';
+  const isInsideRevisionsFolder =
+    folderNames[folderNames.length - 1] === 'Revisions';
 
   function removeLastFileName(filePath: string) {
     // Find the last occurrence of '/' in the file path
@@ -184,7 +186,23 @@ function RevisionManager() {
               </TouchableOpacity>
             )}
           </View>
-          {isInsideRevisions && (
+          <View style={{paddingHorizontal: 10}}>
+            {/* display info message suggesting user to create some folders if user inside 'Revisions' folder and it's empty */}
+            {isInsideRevisionsFolder && !(files.length > 0) && (
+              <EmptyBoxWithInfo
+                title="No Folders Found"
+                description="Add Some Folders Here"
+              />
+            )}
+            {/* display info message suggesting user to add some pdfs if user inside 'Revisions/AnyFolder' folder and it's empty */}
+            {!isInsideRevisionsFolder && currPath.includes('/Revisions/') && !(files.length > 0) && (
+              <EmptyBoxWithInfo
+                title="No PDFs Found"
+                description="Add Some PDFs Here"
+              />
+            )}
+          </View>
+          {!isInsideRevisionsFolder && (
             <TouchableOpacity
               style={{
                 padding: 10,
@@ -239,7 +257,7 @@ function RevisionManager() {
               )}
             />
           </View>
-          {!isInsideRevisions && (
+          {isInsideRevisionsFolder && (
             <TouchableOpacity
               onPress={() => setModalVisible(true)}
               style={styles.addFolderBtn}>
@@ -322,7 +340,6 @@ function RevisionManager() {
                             itemToModify?.name || '',
                             newFolderName,
                           ) + '.pdf';
-                        console.log('obafadfadfject', newPath);
                       }
 
                       if (newPath) {
@@ -384,10 +401,7 @@ function RevisionManager() {
         </View>
       ) : (
         <PDFReader
-          onPressBackBtn={currentPath =>
-            // setCurrPath(removeLastFileName(currentPath))
-            setPdfFilePath('')
-          }
+          onPressBackBtn={currentPath => setPdfFilePath('')}
           pdfFilePath={pdfFilePath}
         />
       )}
