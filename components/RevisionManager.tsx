@@ -191,7 +191,8 @@ function RevisionManager() {
             {isInsideRevisionsFolder && !(files.length > 0) && (
               <EmptyBoxWithInfo
                 title="No Folders Found"
-                description="Add Some Folders Here"
+                description="Add Some Folders Here (e.g., revision 1,
+                  revision 2)."
               />
             )}
             {/* display info message suggesting user to add some pdfs if user inside 'Revisions/AnyFolder' folder and it's empty */}
@@ -415,7 +416,6 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    // paddingVertical: 40,
   },
 
   addFolderBtn: {
