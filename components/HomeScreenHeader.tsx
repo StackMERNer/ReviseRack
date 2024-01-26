@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {primaryColor} from '../utils/colors';
 
@@ -12,7 +12,6 @@ const HomeScreenHeader = ({onRefresh}: {onRefresh: () => void}) => {
         flexDirection: 'row',
         justifyContent: 'flex-end',
       }}>
-      {/* <Text>hello world</Text> */}
       <Icon name="refresh-circle" color={primaryColor} size={34} />
     </TouchableOpacity>
   );

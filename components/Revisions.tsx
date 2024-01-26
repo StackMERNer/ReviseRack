@@ -13,8 +13,9 @@ import {
   RangeManagerType,
   RevisionCompletionContainerType,
 } from '../navigation/screens/HomeScreen';
+
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {greenPrimary, primaryColor} from '../utils/colors';
+import {fileColors, greenPrimary, primaryColor} from '../utils/colors';
 import EmptyBoxWithInfo from './EmptyBoxWithInfo';
 
 const Revisions = ({
@@ -65,18 +66,21 @@ const Revisions = ({
                 {rangeManager.lastUpdated === new Date().getDate() &&
                   ': ' + todaysRevFolder?.name}
               </Text>
+
               <FlatList
                 data={completedRevisions}
+                style={{gap: 15}}
                 renderItem={({item, index}) => {
                   return (
-                    <View style={[styles.revision, styles.completedRevision]}>
+                    <View style={styles.revision}>
                       <TouchableOpacity
                         style={styles.pdfNameAndIconContainer}
                         onPress={() => onPdfSelect(item)}>
                         <View style={styles.pdfNameAndImgContainer}>
-                          <Image
-                            style={styles.pdfImg}
-                            source={require('./../assets/images/pdficon.png')}
+                          <AntDesign
+                            color={fileColors[index % fileColors.length]}
+                            name="pdffile1"
+                            size={30}
                           />
 
                           <Text style={styles.pdfName}>
@@ -105,16 +109,18 @@ const Revisions = ({
 
               <FlatList
                 data={pendingRevisions}
+                style={{gap: 15}}
                 renderItem={({item, index}) => {
                   return (
-                    <View style={[styles.revision, styles.pendingRevision]}>
+                    <View style={styles.revision}>
                       <TouchableOpacity
                         style={styles.pdfNameAndIconContainer}
                         onPress={() => onPdfSelect(item)}>
                         <View style={styles.pdfNameAndImgContainer}>
-                          <Image
-                            style={styles.pdfImg}
-                            source={require('./../assets/images/pdficon.png')}
+                          <AntDesign
+                            color={fileColors[index % fileColors.length]}
+                            name="pdffile1"
+                            size={30}
                           />
 
                           <Text style={styles.pdfName}>
@@ -165,6 +171,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 20,
     fontWeight: 'bold',
+    textTransform: 'capitalize',
   },
   revisionList: {
     borderWidth: 1,
@@ -180,6 +187,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 10,
   },
   pdfImg: {
     height: 45,
@@ -191,20 +199,17 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
   revision: {
-    paddingRight: 16,
-    paddingVertical: 10,
-    marginBottom: 10,
+    padding: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    borderRadius: 15,
-  },
-  pendingRevision: {
-    backgroundColor: '#FCF2E7',
-  },
-  completedRevision: {
-    backgroundColor: '#BFFEDF',
+    borderRadius: 10,
+    borderWidth: 0.2,
+    paddingHorizontal: 14,
+    paddingVertical: 20,
+
+    // borderColor:'red'
   },
 });
 

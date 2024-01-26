@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     paddingVertical: 25,
     paddingHorizontal: 15,
     shadowColor: 'gray',
-    backgroundColor: secondaryColor,
+    borderWidth: 0.2,
     shadowOffset: {width: -2, height: 4},
     marginHorizontal: 'auto',
     marginVertical: 'auto',

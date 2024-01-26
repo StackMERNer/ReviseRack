@@ -12,13 +12,14 @@ interface Range {
   endDate: Date;
 }
 export interface FileObject {
-  ctime: Date | undefined;
+  ctime: Date | null;
   isDirectory: () => boolean;
   isFile: () => boolean;
-  mtime: Date | undefined;
-  name: string | null;
+  mtime: Date | null;
+  name: string;
   path: string;
   size: number;
+  numberOfFiles?: number;
 }
 export type RangeManagerType = {
   ranges: Range[];
@@ -65,7 +66,7 @@ const HomeScreen = () => {
     if (filePath) {
       RNFS.readDir(filePath)
         .then(result => {
-          setFiles(result);
+          setFiles(result as FileObject[]);
         })
         .catch(err => {
           console.log(err.message, err.code);
@@ -98,11 +99,10 @@ const HomeScreen = () => {
   useEffect(() => {
     RNFS.readDir(revisionsPath)
       .then(result => {
-        setRevisionFolders(result);
+        setRevisionFolders(result as FileObject[]);
       })
       .catch(err => {
         console.log(err.message);
-        // console.log(err.message, err.code);
       });
   }, [revisionsPath, refreshCount]);
 
@@ -236,7 +236,6 @@ const HomeScreen = () => {
       />
     );
   }
-  // console.log('refreshCount', refreshCount);
   return (
     <>
       <View>

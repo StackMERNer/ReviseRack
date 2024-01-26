@@ -36,7 +36,7 @@ const PDFReader = ({
             <Text style={styles.backBtn}>←</Text>
           </TouchableOpacity>
           <View style={styles.navBarInfo}>
-            <Text style={{color: '#fff'}}>
+            <Text>
               {displayAblePageNum}/{totalPages}
             </Text>
           </View>
@@ -85,7 +85,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'black',
+    // backgroundColor: 'black',
+    borderBottomWidth: 0.2,
+    backgroundColor: 'white',
     position: 'absolute',
     zIndex: 1,
   },
@@ -95,7 +97,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 4,
     justifyContent: 'center',
-    color: '#fff',
   },
   shuffleBtn: {
     position: 'absolute',
