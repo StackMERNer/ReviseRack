@@ -10,9 +10,7 @@ import {
   View,
 } from 'react-native';
 import RNFS from 'react-native-fs';
-
 import DocumentPicker from 'react-native-document-picker';
-
 import MIcon from 'react-native-vector-icons/MaterialIcons';
 import EmptyBoxWithInfo from '../../components/EmptyBoxWithInfo';
 import Folders from '../../components/Folders';
@@ -424,7 +422,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 100,
     right: 20,
-    // backgroundColor: 'black',
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,

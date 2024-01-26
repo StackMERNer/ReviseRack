@@ -63,9 +63,12 @@ const Revisions = ({
           {completedRevisions.length > 0 && (
             <View>
               <Text style={styles.heading}>
-                Completed{' '}
-                {new Date(rangeManager.lastUpdated).getDate() ===
-                  new Date().getDate() && ': ' + todaysRevFolder?.name}
+                Completed {/* display folder name if all revisions completed */}
+                {rangeManager.lastUpdated &&
+                  new Date(rangeManager.lastUpdated).getDate() ===
+                    new Date().getDate() &&
+                  completedRevisions.length === files.length &&
+                  ': ' + todaysRevFolder?.name}
               </Text>
 
               <FlatList

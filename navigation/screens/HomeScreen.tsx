@@ -23,7 +23,7 @@ export interface FileObject {
 }
 export type RangeManagerType = {
   ranges: Range[];
-  lastUpdated: Date;
+  lastUpdated: Date | undefined;
   nextRevisionIndex: number;
 };
 export type CompletedRevsionsContainerObjType = {
@@ -45,7 +45,7 @@ const HomeScreen = () => {
   const [refreshCount, setRefreshCount] = useState(0);
   const [revisionFolders, setRevisionFolders] = useState<FileObject[]>([]);
   const [rangeManager, setRangeManager] = useState<RangeManagerType>({
-    lastUpdated: new Date(),
+    lastUpdated: undefined,
     nextRevisionIndex: 0,
     ranges: [],
   });
@@ -105,7 +105,8 @@ const HomeScreen = () => {
   useEffect(() => {
     AsyncStorage.getItem('completedRevisionsContainer').then(res => {
       if (res) {
-        const revisionCompletionObj: CompletedRevsionsContainerObjType = JSON.parse(res);
+        const revisionCompletionObj: CompletedRevsionsContainerObjType =
+          JSON.parse(res);
         if (
           new Date(revisionCompletionObj.currentDate).getDate() ===
           currDate.getDate()
@@ -119,6 +120,7 @@ const HomeScreen = () => {
         const rangeManager: RangeManagerType = JSON.parse(res);
         const nextRevisionIndex = rangeManager.nextRevisionIndex ?? 0;
         if (
+          rangeManager.lastUpdated &&
           new Date(rangeManager.lastUpdated).getDate() !== currDate.getDate()
         ) {
           setNextRevisionIndex(nextRevisionIndex);
@@ -163,8 +165,9 @@ const HomeScreen = () => {
                 new Date(revisionCompletionObj.currentDate).getDate() ===
                   currDate.getDate() &&
                 revisionCompletionObj.completedNames.length === files.length &&
-                (new Date(rangeManager.lastUpdated).getMonth() !==
-                  new Date().getMonth() ||
+                (!rangeManager.lastUpdated ||
+                  new Date(rangeManager.lastUpdated).getMonth() !==
+                    new Date().getMonth() ||
                   new Date(rangeManager.lastUpdated).getDate() !==
                     currDate.getDate())
               ) {
@@ -201,7 +204,16 @@ const HomeScreen = () => {
         nextRevisionIndex < revisionFolders.length - 1
           ? nextRevisionIndex + 1
           : 0;
-      if (new Date().getDate() - new Date(lastRange.endDate).getDate() === 1) {
+      // Update the last range's end date if the following conditions are met:
+      // 1. There is a last updated date.
+      // 2. The month of the last update is the same as the current month.
+      // 3. The current date is one day after the end date of the last range.
+      if (
+        rangeManager.lastUpdated &&
+        new Date(rangeManager.lastUpdated).getMonth() ===
+          new Date().getDate() &&
+        new Date().getDate() - new Date(lastRange.endDate).getDate() === 1
+      ) {
         let updatedLastRange = {...lastRange, endDate: new Date()};
         let withoutLastRange = ranges.slice(0, ranges.length - 1);
         updatedRangeManager = {
