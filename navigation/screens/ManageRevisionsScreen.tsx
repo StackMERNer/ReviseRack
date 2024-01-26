@@ -18,7 +18,7 @@ import EmptyBoxWithInfo from '../../components/EmptyBoxWithInfo';
 import Folders from '../../components/Folders';
 import PdfFiles from '../../components/PdfFiles';
 import PDFReader from '../../components/PDFReader';
-import { FileObject } from './HomeScreen';
+import {FileObject} from './HomeScreen';
 
 function ManageRevisionsScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -323,6 +323,11 @@ function ManageRevisionsScreen() {
                   onChangeText={text => setNewFolderName(text)}
                   placeholder="Enter New Name"
                   style={styles.textInput}
+                  defaultValue={
+                    itemToModify?.isFile()
+                      ? itemToModify?.name?.slice(0, -4)
+                      : itemToModify?.name
+                  }
                 />
 
                 <TouchableOpacity

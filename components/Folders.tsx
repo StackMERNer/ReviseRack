@@ -62,13 +62,13 @@ const Folders = ({
 const styles = StyleSheet.create({
   filesContainer: {
     marginTop: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 4,
     width: '100%',
   },
   file: {
     borderRadius: 10,
     gap: 4,
-    margin: 5,
+    margin: 3,
     flexGrow: 1,
     borderWidth: 0.2,
     padding: 14,

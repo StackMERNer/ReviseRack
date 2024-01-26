@@ -152,8 +152,7 @@ const HomeScreen = () => {
         'completedRevisionsContainer',
         JSON.stringify(updated),
       )
-        .then(res => {
-          // console.log('stored', res);
+        .then(() => {
           AsyncStorage.getItem('completedRevisionsContainer').then(res => {
             if (res) {
               const revisionCompletionObj: RevisionCompletionType =

@@ -8,6 +8,7 @@ const HomeScreenHeader = ({onRefresh}: {onRefresh: () => void}) => {
     <TouchableOpacity
       onPress={onRefresh}
       style={{
+        paddingTop: 10,
         paddingHorizontal: 20,
         flexDirection: 'row',
         justifyContent: 'flex-end',

@@ -87,7 +87,7 @@ const Revisions = ({
                             {index + 1}. {item.name?.slice(0, -4)}
                           </Text>
                         </View>
-                        <View>
+                        <View style={{position: 'absolute', right: 0}}>
                           <AntDesign
                             name="checkcircle"
                             style={{color: greenPrimary}}
@@ -127,7 +127,7 @@ const Revisions = ({
                             {index + 1}. {item.name?.slice(0, -4)}
                           </Text>
                         </View>
-                        <View>
+                        <View style={{position: 'absolute', right: 0}}>
                           <AntDesign
                             name="rightcircle"
                             style={{color: primaryColor}}
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   revisionsContainer: {
     marginVertical: 15,
-    width: '96%',
+    width: '98%',
     backgroundColor: 'white',
     paddingBottom: 20,
     paddingHorizontal: 5,
