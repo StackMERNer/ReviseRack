@@ -14,7 +14,7 @@ import {
   RevisionCompletionContainerType,
 } from '../navigation/screens/HomeScreen';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {greenPrimary, primaryColor, secondaryColor} from '../utils/colors';
+import {greenPrimary, primaryColor} from '../utils/colors';
 
 const Revisions = ({
   onPdfSelect,
@@ -29,7 +29,7 @@ const Revisions = ({
   files: FileObject[];
   completedRevisionsContainer: RevisionCompletionContainerType;
 }) => {
-  const [activePdf, setActivePdf] = useState('');
+  const [selectedPdfPath, setSelectedPdfPath] = useState('');
   const [pendingRevisions, setPendingRevisions] = useState<FileObject[]>([]);
   const [completedRevisions, setCompletedRevisions] = useState<FileObject[]>(
     [],
@@ -45,14 +45,15 @@ const Revisions = ({
     setCompletedRevisions(completed);
     setPendingRevisions(pending);
   }, [completedRevisionsContainer, files]);
-  if (activePdf) {
+  if (selectedPdfPath) {
     return (
       <PDFReader
-        onPressBackBtn={() => setActivePdf('')}
-        pdfFilePath={activePdf}
+        onPressBackBtn={() => setSelectedPdfPath('')}
+        pdfFilePath={selectedPdfPath}
       />
     );
   }
+  console.log(completedRevisionsContainer);
   return (
     <View style={styles.mainContainer}>
       {files.length > 0 ? (
@@ -225,16 +226,7 @@ const styles = StyleSheet.create({
   },
   completedRevision: {
     backgroundColor: '#BFFEDF',
-  },
-  calendarContainer: {
-    height: '50%',
-    width: '100%',
-    paddingVertical: 16,
-    // borderWidth: 2,
-    marginHorizontal: 'auto',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  }
 });
 
 export default Revisions;

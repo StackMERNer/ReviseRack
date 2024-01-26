@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -61,9 +61,9 @@ const PDFReader = ({
           maxScale={3.0}
           onPressLink={link => Linking.openURL(link)}
 
-          // renderActivityIndicator={() => (
-          //   <ActivityIndicator color="black" size="large" />
-          // )}
+          renderActivityIndicator={() => (
+            <ActivityIndicator color="black" size="large" />
+          )}
         />
       </ScrollView>
 
@@ -77,7 +77,6 @@ const PDFReader = ({
 };
 const styles = StyleSheet.create({
   pdfNavBar: {
-    // padding: 5,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
@@ -92,8 +91,6 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   shuffleBtn: {
-    // height: 50,
-    // width: 50,
     position: 'absolute',
     bottom: 100,
     right: 20,

@@ -35,24 +35,22 @@ function RevisionManager() {
     RNFS.DocumentDirectoryPath + '/Revisions',
   );
 
-  const [folders, setFolders] = useState<FileObject[]>([]);
+  const [files, setFiles] = useState<FileObject[]>([]);
   const [folderName, setFolderName] = useState('');
   const [itemToModify, setItemToModify] = useState<FileObject | undefined>(
     undefined,
   );
   const [newFolderName, setNewFolderName] = useState('');
-  const getAllFolders = () => {
+  const getAllFiles = () => {
     RNFS.readDir(currPath)
       .then(result => {
-        console.log('result', result);
-        setFolders(result);
+        setFiles(result as FileObject[]);
       })
       .catch(err => {
         console.log(err.message, err.code);
       });
   };
-
-  // creating Revisions folder if it's not exist
+  // create Revisions folder if it's not exist
   useEffect(() => {
     const revisionsFolderPath = `${RNFS.DocumentDirectoryPath}/Revisions`;
     RNFS.exists(revisionsFolderPath)
@@ -66,7 +64,7 @@ function RevisionManager() {
       });
   }, []);
 
-  // delete unnecessary files and folders except 'Revisions'
+  // delete unnecessary files and files except 'Revisions'
   useEffect(() => {
     RNFS.readDir(RNFS.DocumentDirectoryPath).then(res => {
       res
@@ -82,7 +80,7 @@ function RevisionManager() {
         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
         {
           title: 'Need Storage Permission',
-          message: 'This app needs access to your Storage ',
+          message: 'This app needs access to your Storage for managing PDFs',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
@@ -91,7 +89,7 @@ function RevisionManager() {
       // console.log(granted);
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         // console.log('You can use the Storage');
-        getAllFolders();
+        getAllFiles();
       } else {
         // console.log(granted);
         console.log('Storage permission denied');
@@ -107,7 +105,7 @@ function RevisionManager() {
   const createFolder = () => {
     RNFS.mkdir(currPath + '/' + folderName)
       .then(() => {
-        getAllFolders();
+        getAllFiles();
       })
       .catch(err => console.log(err));
   };
@@ -115,7 +113,7 @@ function RevisionManager() {
   const hanldeDelete = (path: string) => {
     RNFS.unlink(path)
       .then(() => {
-        getAllFolders();
+        getAllFiles();
       })
       .catch(err => console.log(err));
   };
@@ -147,7 +145,7 @@ function RevisionManager() {
         ? `currPath${selectedFile.name}`
         : `${currPath}/${selectedFile.name}`;
       await RNFS.copyFile(selectedFile.uri, destinationPath);
-      getAllFolders();
+      getAllFiles();
     } catch (error) {
       console.log('error occurred', error);
     }
@@ -203,7 +201,7 @@ function RevisionManager() {
 
           <View style={styles.folderContainer}>
             <FlatList
-              data={folders}
+              data={files}
               numColumns={2}
               //   contentContainerStyle={{columnGap: 5}}
               renderItem={({item}) => (
@@ -335,7 +333,7 @@ function RevisionManager() {
                           .then(() => {
                             setItemToModify(undefined);
                             setNewFolderName('');
-                            getAllFolders();
+                            getAllFiles();
                             setModalVisible(false);
                           })
                           .catch(error => {
@@ -474,7 +472,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     alignContent: 'center',
   },
-  folders: {
+  files: {
     flexDirection: 'row',
     flexShrink: 4,
   },
