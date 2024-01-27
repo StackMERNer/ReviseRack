@@ -18,6 +18,7 @@ Simply download the app from the provided APK file in the "Releases" section.
 
 
 ## 🌐 Connect with Us
-For updates and discussions, join our community on [Facebook]([link-to-discord](https://www.facebook.com/groups/672237628076696)).
+For updates and discussions, join our community on [Facebook](https://www.facebook.com/groups/672237628076696).
+
 
 ## 🌟 Start Organizing and Revising Effectively with Revise Rack!
