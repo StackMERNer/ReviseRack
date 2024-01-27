@@ -30,6 +30,8 @@ function ManageRevisionsScreen() {
     undefined,
   );
   const [newFolderName, setNewFolderName] = useState('');
+  const [loading, setLoading] = useState(false);
+
   const getAllFiles = async () => {
     try {
       const result = await Promise.all(
@@ -127,7 +129,7 @@ function ManageRevisionsScreen() {
       });
       if (selectedFiles.length) {
         selectedFiles.map(selectedFile => {
-          copyPDFToAnotherFolder(selectedFile);
+          copyPDFToFolder(selectedFile);
         });
       }
     } catch (error) {
@@ -135,13 +137,14 @@ function ManageRevisionsScreen() {
     }
   };
 
-  const copyPDFToAnotherFolder = async (selectedFile: {
+  const copyPDFToFolder = async (selectedFile: {
     fileCopyUri: null | string;
     name: string | null;
     size: number | null;
     type: string | null;
     uri: string;
   }) => {
+    setLoading(true);
     try {
       const destinationPath = currPath.endsWith('/')
         ? `currPath${selectedFile.name}`
@@ -150,6 +153,8 @@ function ManageRevisionsScreen() {
       getAllFiles();
     } catch (error) {
       console.log('error occurred', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -259,6 +264,7 @@ function ManageRevisionsScreen() {
               files={files}
             />
           )}
+          {loading && <Text style={styles.loadingText}>{'loading...'}</Text>}
 
           {isInsideRevisionsFolder && (
             <TouchableOpacity
@@ -491,7 +497,8 @@ const styles = StyleSheet.create({
   backBtnText: {
     fontSize: 30,
     fontWeight: 'bold',
-  }
+  },
+  loadingText: {textAlign: 'center', marginTop: 10, fontSize: 20},
 });
 
 export default ManageRevisionsScreen;
