@@ -188,7 +188,6 @@ const HomeScreen = () => {
       // onPdfSelect(file.path);
     }
   };
-
   const updateRangeManager = () => {
     AsyncStorage.getItem('RangeManager').then(res => {
       let rangeManager: RangeManagerType = res
@@ -211,7 +210,7 @@ const HomeScreen = () => {
       if (
         rangeManager.lastUpdated &&
         new Date(rangeManager.lastUpdated).getMonth() ===
-          new Date().getDate() &&
+          new Date().getMonth() &&
         new Date().getDate() - new Date(lastRange.endDate).getDate() === 1
       ) {
         let updatedLastRange = {...lastRange, endDate: new Date()};
@@ -256,6 +255,7 @@ const HomeScreen = () => {
       />
     );
   }
+
   return (
     <>
       <View>
