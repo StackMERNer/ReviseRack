@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 4,
     width: '100%',
+    paddingBottom: 60,
   },
   file: {
     borderRadius: 10,

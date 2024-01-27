@@ -3,7 +3,7 @@ import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {fileColors} from '../utils/colors';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { FileObject } from '../navigation/screens/HomeScreen';
+import {FileObject} from '../navigation/screens/HomeScreen';
 
 const PdfFiles = ({
   onLongPress,
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 10,
     width: '100%',
+    paddingBottom: 60,
   },
   file: {
     borderRadius: 10,
