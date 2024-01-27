@@ -9,11 +9,6 @@ Revise Rack is a mobile application crafted with React Native, designed to enhan
 - **Daily Study Recommendations:** Receive daily suggestions for folders to focus on, ensuring a structured and efficient revision routine.
 - **Intuitive User Interface:** A clean and user-friendly interface makes navigation and study planning a breeze.
 
-## 🚀 What's New in v1.0
-- Initial release of Revise Rack app.
-- Create and manage folders for PDFs.
-- Receive daily study suggestions for optimal revision.
-- Intuitive user interface for a seamless user experience.
 
 ## 📱 Platform Compatibility
 Revise Rack is currently available for Android devices.
